@@ -1,5 +1,5 @@
 import { ArrowBackIos, ArrowBackIosNew } from "@mui/icons-material";
-import { Alert, Button, Divider, IconButton, MenuItem, TextField, Tooltip, Typography, Unstable_Grid2 as Grid} from "@mui/material";
+import { Alert, Breadcrumbs, Button, Divider, IconButton, LinearProgress, MenuItem, TextField, Tooltip, Typography, Unstable_Grid2 as Grid} from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import AdminLayout from "../../../component/layout/AdminLayout";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -13,11 +13,12 @@ import { setCurrentPage } from "../../../features/pathSlice";
 const CreateUser = () =>{
 
     const dispatch = useDispatch();
-
+    const [onProcess, setOnProcess] = useState(false);
     const [userRoles, setUserRoles] = useState([]);
+    const [userTitles, setUserTitles] = useState([]);
 
-    const [createSuccess, setCreateSuccess] = useState(true);
-    const [createFail, setCreateFail] = useState(true);
+    const [createSuccess, setCreateSuccess] = useState(false);
+    const [createFail, setCreateFail] = useState(false);
 
     const [accountValid, setAccountValid] = useState(true);
     const [nameValid, setNameValid] = useState(true);
@@ -30,8 +31,8 @@ const CreateUser = () =>{
     const [userName, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [role, setRole] = useState("C");
-    const [title, setTitle] = useState("");
+    const [role, setRole] = useState("1");
+    const [title, setTitle] = useState("1");
 
     useEffect(() => {
         dispatch(setCurrentPage("user"));
@@ -41,22 +42,25 @@ const CreateUser = () =>{
         if(userRoles.length == 0) {
             getRoles();
         }
+        if(userTitles.length == 0) {
+            getTitle();
+        }
     });
 
     const reset = () =>{
+        setOnProcess(false);
+        setCreateSuccess(false);
+        setCreateFail(false)
         resetValidation();
-
-        setAccount("");
-        setUserName("");
-        setEmail("");
-        setPhone("");
-        setRole("C");
-        setTitle("");
+        resetData();
     }
 
     const register = async () =>{
+        setCreateSuccess(false);
+        setCreateFail(false)
         resetValidation();
         if(validate()){
+            setOnProcess(true);
             let data = new FormData();
             data.append("account", account);
             data.append("name", userName);
@@ -65,12 +69,15 @@ const CreateUser = () =>{
             data.append("role", role);
             data.append("title", title);
 
-            let res = sendAuthPostResquest("/api/user", data);
+            let res = await sendAuthPostResquest("/api/user", data);
             if(res.status === 200) {
-                setCreateSuccess(false);
-                reset();
+                setCreateSuccess(true);
+                setOnProcess(false);
+                resetData();
+                resetValidation();
             } else{
                 setCreateFail(false);
+                setOnProcess(false);
             }
         }
     }
@@ -93,7 +100,7 @@ const CreateUser = () =>{
             result = false;
             setEmailValid(false);
         }
-        if(phone.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im) === null) {
+        if(phone !== "" && phone.match(/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im) === null) {
             result = false;
             setPhoneValid(false);
         }
@@ -101,9 +108,16 @@ const CreateUser = () =>{
         return result;
     }
 
+    const resetData = () =>{
+        setAccount("");
+        setUserName("");
+        setEmail("");
+        setPhone("");
+        setRole("1");
+        setTitle("1");
+    }
+
     const resetValidation = () =>{
-        setCreateSuccess(true);
-        setCreateFail(true)
         setAccountValid(true);
         setNameValid(true);
         setEmailValid(true);
@@ -123,8 +137,24 @@ const CreateUser = () =>{
         }
     }
 
+    const getTitle = async () =>{
+        let res = await sendAuthGetRequest("/api/user/title");
+        if(res.status === 200){
+            let arr = [];
+            Object.keys(res.data).map((key) =>{
+                arr.push({value: key, label: res.data[key]});
+            });
+            setUserTitles(arr);
+        }
+    }
+
     return (
         <Stack direction={"column"} spacing={2}>
+            <Breadcrumbs aria-label="breadcrumb">
+                <Link underline="hover" color="inherit" href="/admin">Home</Link>
+                <Link underline="hover" color="inherit" href="/admin/user">User</Link>
+                <Typography color="text.primary">Create</Typography>
+            </Breadcrumbs>
             <Stack direction="row" 
                     alignItems="center"
                     spacing={2}
@@ -132,18 +162,19 @@ const CreateUser = () =>{
                         paddingLeft: `10px`,
                         paddingRight: `10px`
                     }}>
-                <Link href={"/admin/user"}>
+                {true? <></>:<Link href={"/admin/user"}>
                     <Tooltip arrow title="Trở về" placement="right">
                         <IconButton>
                             <ArrowBackIosNew />
                         </IconButton>
                     </Tooltip>
-                </Link>
+                </Link>}
                 <Typography variant="h5">Tạo tài khoản người dùng</Typography>
             </Stack>
             <Divider/>
-            {!createFail? <Alert severity="error">Tài khoản không tồn tại hoặc mật khẩu không hợp lệ!</Alert>: <></>}
-            {!createSuccess? <Alert severity="success">Đăng nhập thành công!</Alert>: <></>}
+            {onProcess? <LinearProgress />: <></>}
+            {createFail? <Alert severity="error">Có lỗi xảy ra hoặc người dùng đã tồn tại!</Alert>: <></>}
+            {createSuccess? <Alert severity="success">Tạo người dùng thành công!</Alert>: <></>}
             <Stack direction="column" sx={(theme) => ({
                 gap: `40px`,
                 [theme.breakpoints.up('md')]: {
@@ -158,30 +189,36 @@ const CreateUser = () =>{
                     width: `100%`,
                     gap: `40px`
                 }}>
-                    <TextField fullWidth  error={!accountValid} helperText={accountValid? "" : "Mã giảng viên không hợp lệ"} required value={account} onChange={(e) => {setAccount(e.target.value)}} label="Mã giảng viên"/>
-                    <TextField fullWidth  error={!nameValid} helperText={nameValid? "" : "Họ tên giảng viên không hợp lệ"} required value={userName} onChange={(e) => {setUserName(e.target.value)}} label="Họ tên giảng viên"/>
+                    <TextField fullWidth color="secondary" error={!accountValid} helperText={accountValid? "" : "Mã giảng viên không hợp lệ"} required value={account} onChange={(e) => {setAccount(e.target.value)}} label="Mã giảng viên"/>
+                    <TextField fullWidth color="secondary" error={!nameValid} helperText={nameValid? "" : "Họ tên giảng viên không hợp lệ"} required value={userName} onChange={(e) => {setUserName(e.target.value)}} label="Họ tên giảng viên"/>
                 </Stack>
                 <Stack direction={{sx: "column", md: "row"}} alignItems='center'
                     justifyContent="center" sx={{
                     width: `100%`,
                     gap: `40px`
                 }}>
-                    <TextField fullWidth  error={!emailValid} helperText={emailValid? "" : "Email không hợp lệ"} required value={email} onChange={(e) => {setEmail(e.target.value)}} label="Email"/>
-                    <TextField fullWidth  error={!phoneValid} helperText={phoneValid? "" : "Số điện thoại không hợp lệ"} value={phone} onChange={(e) => {setPhone(e.target.value)}} label="Số điện thoại"/>
+                    <TextField fullWidth color="secondary" error={!emailValid} helperText={emailValid? "" : "Email không hợp lệ"} required value={email} onChange={(e) => {setEmail(e.target.value)}} label="Email"/>
+                    <TextField fullWidth color="secondary" error={!phoneValid} helperText={phoneValid? "" : "Số điện thoại không hợp lệ"} value={phone} onChange={(e) => {setPhone(e.target.value)}} label="Số điện thoại"/>
                 </Stack>
                 <Stack direction={{sx: "column", md: "row"}} alignItems='center'
                     justifyContent="center" sx={{
                     width: `100%`,
                     gap: `40px`
                 }}>
-                    <TextField fullWidth select={userRoles.length > 0} error={!roleValid} helperText={roleValid? "" : "Chức vụ không hợp lệ"} required value={role} onChange={(e) => {setRole(e.target.value)}} label="Chức vụ">
+                    <TextField fullWidth color="secondary" select={userRoles.length > 0} required value={role} onChange={(e) => {setRole(e.target.value)}} label="Chức vụ">
                     {userRoles.length > 0 ? userRoles.map((option) => (
-                        <MenuItem  key={option.value} value={option.value}>
+                        <MenuItem  key={option.value+option.label.replace(/\s/, "")} value={option.value}>
                         {option.label}
                         </MenuItem >
                     )): <></>}
                     </TextField>
-                    <TextField fullWidth  error={!titleValid} helperText={titleValid? "" : "Học hàm/ Học vị không hợp lệ"} value={title} onChange={(e) => {setTitle(e.target.value)}} label="Học hàm/ Học vị"/>
+                    <TextField fullWidth color="secondary" select={userTitles.length > 0} required value={title} onChange={(e) => {setTitle(e.target.value)}} label="Học hàm/ Học vị">
+                    {userTitles.length > 0 ? userTitles.map((option) => (
+                        <MenuItem  key={option.value+option.label.replace(/\s/, "")} value={option.value}>
+                        {option.label}
+                        </MenuItem >
+                    )): <></>}
+                    </TextField>
                 </Stack>
             </Stack>
             <Box sx={(theme) => ({
@@ -198,8 +235,8 @@ const CreateUser = () =>{
                       alignItems: 'center',
                       justifyContent: 'center',
                     }) }>
-                      <Button size="large" onClick={reset} variant="outlined">Đặt lại</Button>
-                      <Button size="large" onClick={register} variant="contained">Tạo người dùng</Button>
+                      <Button disabled={onProcess} size="large" color={"secondary"} onClick={reset} variant="outlined">Đặt lại</Button>
+                      <Button disabled={onProcess} size="large" onClick={register} variant="contained">Tạo người dùng</Button>
             </Box>
         </Stack>
     )

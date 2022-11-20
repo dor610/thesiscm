@@ -1,6 +1,7 @@
-import { Alert, Button, Divider, Paper, TextField, Typography } from "@mui/material";
+import { Alert, Button, Divider, LinearProgress, Paper, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { Box, Stack } from "@mui/system";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,6 +16,7 @@ export default function LoginPage() {
     const loginSuccess = useSelector(state => state.user.loginSuccess);
     const loginFail = useSelector(state => state.user.loginFail);
     const isUserLoggedIn = useSelector(state => state.user.isLoggedIn);
+    const [onProcess, setOnProcess] = useState(false);
     const [account, setUserAccount] = useState("");
     const [password, setPassword] = useState("");
     const [isAccountValid, setIsAccountValid] = useState(true);
@@ -22,7 +24,7 @@ export default function LoginPage() {
     
     useEffect(() =>{
       if(isUserLoggedIn){
-        router.push("/");
+         router.push("/");
       }
     }, [isUserLoggedIn]);
 
@@ -33,7 +35,7 @@ export default function LoginPage() {
     }, [loginSuccess]);
 
     const getUserData = async () =>{
-      let result = await sendAuthGetRequest("/api/user?account="+account);
+      let result = await sendAuthGetRequest("/api/user/account?account="+account);
       if(result.status === 200) {
         dispatch(setUserData(result.data));
         setData("user", JSON.stringify(result.data));
@@ -70,6 +72,7 @@ export default function LoginPage() {
     const login = async () =>{
       resetValidation();
       if(validateData()) {
+        setOnProcess(true);
         dispatch(resetLoginStatus());
         let formData = new FormData();
         formData.append("account", account);
@@ -80,8 +83,10 @@ export default function LoginPage() {
           dispatch(setAccount(account));
           setData("token", result.authorization);
           dispatch(setLoginSuccess(true));
+          setOnProcess(false);
         } else {
           dispatch(setLoginFail(true));
+          setOnProcess(false);
         }
       }
     }
@@ -96,7 +101,7 @@ export default function LoginPage() {
         alignItems: 'center',
       }}>
         <Paper elevation={5} sx={(theme) => ({
-              backgroundColor: `background.secondary`,
+              backgroundColor: `background.paper`,
               height: `65vh`,
               width: `600px`,
               [theme.breakpoints.down("sm")]: {
@@ -104,7 +109,7 @@ export default function LoginPage() {
               }
             })}>
               <Stack direction="column"
-                    spacing={4}
+                    spacing={3}
                     sx={{
                       p: `5%`,
                     }}>
@@ -125,6 +130,7 @@ export default function LoginPage() {
                     <Typography variant="h5">ThesisCM</Typography>
                   </Box>
                   <Divider />
+                  {onProcess? <LinearProgress />: <></>}
                   <Stack direction="column">
                   <Typography sx={theme => ({
                     fontSize: `2.5em`,
@@ -141,23 +147,28 @@ export default function LoginPage() {
                   })}>Đăng nhập</Typography>
                   </Stack>
                     <Stack direction="column"
-                    spacing={3}>
-                      <TextField error={!isAccountValid} helperText={isAccountValid? "" : "Mã giảng viên không hợp lệ"} required value={account} onChange={(e) => {setUserAccount(e.target.value)}} label="Mã giảng viên"/>
-                      <TextField error={!isPasswordValid} helperText={isPasswordValid? "" : "Mật khẩu không hợp lệ"} required value={password} onChange={(e) => {setPassword(e.target.value)}} label="Mật khẩu"/>
+                    spacing={4}>
+                      <TextField color="secondary" error={!isAccountValid} helperText={isAccountValid? "" : "Mã giảng viên không hợp lệ"} required value={account} onChange={(e) => {setUserAccount(e.target.value)}} label="Mã giảng viên"/>
+                      <TextField color="secondary" error={!isPasswordValid} type="password"  helperText={isPasswordValid? "" : "Mật khẩu không hợp lệ"} required value={password} onChange={(e) => {setPassword(e.target.value)}} label="Mật khẩu"/>
                     </Stack>
                     <Box sx={{
                       display: `flex`,
                       flexDirection: `row`,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: `300px`,
+                      gap: `250px`,
                     }}>
-                      <Typography>Quên mật khẩu</Typography>
-                      <Button onClick={login} variant="outlined">Đăng nhập</Button>
+                      <Link href={"#"}><Typography sx={{
+                        ":hover": {
+                          cursor: `pointer`,
+                          color: 'background.secondary'
+                        }
+                      }}>Quên mật khẩu?</Typography></Link>
+                      <Button disabled={onProcess} size="large" onClick={login} variant="contained">Đăng nhập</Button>
                     </Box>
                     
                   {loginFail? <Alert severity="error">Tài khoản không tồn tại hoặc mật khẩu không hợp lệ!</Alert>: <></>}
-                  {loginSuccess? <Alert severity="success">Đăng nhập thành công!</Alert>: <></>}
+                  {loginSuccess? <Alert severity="primary">Đăng nhập thành công!</Alert>: <></>}
               </Stack>
             </Paper>
       </Box>

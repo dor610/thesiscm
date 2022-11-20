@@ -1,4 +1,5 @@
 import axios from "axios";
+import dayjs from "dayjs";
 import {getData} from "./localStorage";
 
 export const url = "http://localhost:8080";
@@ -52,6 +53,7 @@ export const sendAuthGetRequest = async (path) =>{
             data: res.data
         };
     } catch (e) {
+        console.log(url + path);
         console.log(e.response);
         return {
             status: e.response.status,
@@ -155,24 +157,45 @@ export const sendLoginRequest = async (data) =>{
 export const isLoggedIn = async () =>{
     try {
         const token = getData("token");
-        if(token === null) return false;
+        const account = JSON.parse(getData("user")).account;
+        if(token === null) return {status: false, account: ""};
         else {
-            let data = new FormData();
-            data.append("account". account);
             const res = await axios({
-                method: "post",
+                method: "get",
                 headers: generateHeader(),
-                url: url + "/checkAuthentication",
-                data: data,
+                url: url + "/api/user/authenticate?account="+account,
             });
-            if(res.status === 200 && res.data == true) return true;
-            else return false;
+            if(res.status === 200 && res.data != "") return {status: true, account: res.data};
+            else return {status: false, account: ""};
         }  
     } catch (e) {
-        return false;
+        console.log(e);
+        return {status: false, account: ""};
     }
 }
 
+export const convertNumberMarkToLetterMark = (number) =>{
+    if(number < 4) 
+        return "F";
+    if(number < 5)
+        return "D";
+    if(number < 5.5)
+        return "D+";
+    if(number < 6.5)
+        return "C";
+    if(number < 7)
+        return "C+";
+    if(number < 8)
+        return "B";
+    if(number < 9)
+        return "B+";
+    return "A";
+}
+
+// Dayjs object
+export const weeksBetweenDates = (startDate, endDate) =>{
+    return endDate.diff(startDate, "week");
+}
 
 export const miliSecToTime = miliSec =>{
     let sec = Math.floor(miliSec/1000);
@@ -192,10 +215,13 @@ export const miliSecToTime = miliSec =>{
 }
 
 export const miliSecToDate = miliSec =>{
-    let d = new Date(miliSec);
+    let d = new Date(parseInt(miliSec));
+    let date = d.getDate() < 10? "0"+d.getDate(): d.getDate();
+    let month = d.getUTCMonth() < 9? "0" + (d.getUTCMonth() + 1): (d.getUTCMonth() + 1);
+    let year = d.getFullYear();
     let hour = d.getHours() < 10? "0"+d.getHours(): d.getHours();
     let minute = d.getMinutes() < 10? "0"+ d.getMinutes(): d.getMinutes()
-    return hour+":"+minute + " - " +d.getUTCDate()+"/"+(d.getMonth() + 1)+"/"+d.getFullYear();
+    return hour+":"+minute + " - " +date+"/"+month+"/"+year;
 }
 
 export const processMessageTime = (milisec) =>{
@@ -204,6 +230,13 @@ export const processMessageTime = (milisec) =>{
     if(d.getFullYear() === now.getFullYear() && now.getUTCMonth() === d.getUTCMonth() && d.getDate() === now.getDate())
         return miliSecToTime(now.getTime() - milisec);
     else return miliSecToDateOnly(milisec);    
+}
+
+export const miliSecToTimeOnly = milisec => {
+    let d = new Date(parseInt(milisec));
+    let hour = d.getHours() < 10? "0"+d.getHours(): d.getHours();
+    let minute = d.getMinutes() < 10? "0"+ d.getMinutes(): d.getMinutes()
+    return hour+"h"+minute;
 }
 
 export const miliSecToDateOnly = milisec =>{

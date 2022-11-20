@@ -1,21 +1,13 @@
-import { ListItem, ListItemIcon, ListItemText, Box, Paper, Tooltip, IconButton } from "@mui/material";
+import { Box, Paper, IconButton } from "@mui/material";
 
-import { styled, useTheme } from '@mui/material/styles';
+import { darken, lighten, styled, useTheme } from '@mui/material/styles';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiBox from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
-import ListItemButton from '@mui/material/ListItemButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { setIsLoggedIn } from "../../features/userSlice";
-import { isLoggedIn } from "../../common/utils";
+import { useState } from "react"; 
 import NavBar from "../admin/NavBar";
 
 const drawerWidth = 240;
@@ -74,7 +66,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     flexShrink: 0,
     borderRight: `none`,
     whiteSpace: 'nowrap',
-    '& .css-12i7wg6-MuiPaper-root-MuiDrawer-paper': {
+    '> div': {
         border: `none`,
         backgroundColor: theme.palette.background.base,
       },
@@ -93,23 +85,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function AdminLayout({children}) {
 
     const theme = useTheme();
-    const router = useRouter();
-    const dispatch = useDispatch();
-    const isUserLoggedIn = useSelector(state => state.user.isLoggedIn);
-    const currentPage = useSelector(state => state.path.currentPage);
-    const previousPage = useSelector(state => state.path.previousPage);
     const [open, setOpen] = useState(true);
 
-    useEffect(() =>{
-      if(!isUserLoggedIn) {
-        if(!isLoggedIn()){
-          router.push("/login");
-        }else {
-          dispatch(setIsLoggedIn(true));
-        }
-      }
-    }, [isUserLoggedIn, router, dispatch]);
-  
     const handleDrawerOpen = () => {
       setOpen(true);
     };
@@ -117,16 +94,38 @@ export default function AdminLayout({children}) {
     const handleDrawerClose = () => {
       setOpen(false);
     };
+    
+    const getBackgroundColor = (color, mode) =>
+        mode === 'dark' ? darken(color, 0.6) : lighten(color, 0.4);
 
-    const generateMenuList = () =>{
+    const getHoverBackgroundColor = (color, mode) =>
+        mode === 'dark' ? darken(color, 0.5) : lighten(color, 0.5);
 
-    }
   
     return (
       <Box sx={{
         backgroundColor: `background.base`,
         width: `100vw`,
-        height: `100vh`}}>
+        height: `100vh`,
+        '& .odd-row': {
+          bgcolor: (theme) =>
+            getBackgroundColor(theme.palette.background.paper, theme.palette.mode),
+          '&:hover': {
+            bgcolor: (theme) =>
+              getHoverBackgroundColor(theme.palette.background.base, theme.palette.mode),
+          },
+        },
+      '& .even-row': {
+          bgcolor: (theme) =>
+            getBackgroundColor(theme.palette.info.main, theme.palette.mode),
+          '&:hover': {
+            bgcolor: (theme) =>
+              getHoverBackgroundColor(
+                  theme.palette.info.main,
+                theme.palette.mode,
+              ),
+          },
+      },}}>
         <CssBaseline />
         <AppBar position="fixed" open={open} sx={{backgroundColor: `background.base`}}>
           <Toolbar>
@@ -138,8 +137,8 @@ export default function AdminLayout({children}) {
                 >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              Mini variant drawer
+            <Typography sx={{paddingLeft: `15px`}} variant="h6" noWrap component="div">
+              Quản lý luận văn
             </Typography>
           </Toolbar>
         </AppBar>

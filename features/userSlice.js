@@ -6,6 +6,8 @@ const initialState = {
     loginSuccess: false,
     loginFail: false,
     isLoggedIn: false,
+
+    userView: "",
 };
 
 const userSlice = createSlice({
@@ -13,7 +15,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setAccount: (state, action) =>{
-            state.user = action.payload;
+            state.account = action.payload;
         },
         setUserData: (state, action) =>{
             state.data = action.payload; 
@@ -32,9 +34,12 @@ const userSlice = createSlice({
             state.loginSuccess = false;
             state.account = "";
         },
+        setUserView: (state, action) =>{
+            state.userView = action.payload;
+        },
     }
 });
 
-export const {setAccount, setUserData, setLoginFail, setLoginSuccess, setIsLoggedIn, resetLoginStatus} = userSlice.actions;
+export const {setAccount, setUserData, setLoginFail, setLoginSuccess, setIsLoggedIn, resetLoginStatus, setUserView} = userSlice.actions;
 
 export default userSlice.reducer;

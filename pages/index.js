@@ -27,7 +27,7 @@ export default function Home() {
   const redirect = () =>{
       let user = JSON.parse(getData("user"));
       //user.role in ['','']
-      console.log(user.role);
+      if(!user) router.push("/login");
       if(true) {
         router.push("/admin");
       } else {
