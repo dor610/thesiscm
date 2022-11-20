@@ -1,8 +1,6 @@
 import { Box, Divider } from "@mui/material"
 import { Stack } from "@mui/system"
-import { forwardRef } from "react"
 import PointSheetForPrint from "./PointSheetForPrint"
-import Report from "./report"
 import ReportForPrint from "./ReportForPrint"
 
 const Printable = ({thesisData}) => {

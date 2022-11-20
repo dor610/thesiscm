@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Box, Stack } from "@mui/system";
 import { Clear, SearchOutlined } from "@mui/icons-material";
 import { sendAuthGetRequest, sendGetRequest } from "../../../common/utils";
-import Topic from "../../../component/user/search/topic";
+import Topic from "../../../component/user/search/Topic";
 import Student from "../../../component/user/search/Student";
 
 const Search = () =>{

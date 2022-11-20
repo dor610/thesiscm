@@ -8,7 +8,7 @@ import { useSelector } from "react-redux"
 import { sendAuthGetRequest } from "../../common/utils"
 import Point from "../../component/presentation/Point"
 import Printable from "../../component/presentation/Printable"
-import Report from "../../component/presentation/report"
+import Report from "../../component/presentation/Report"
 import ReportForPrint from "../../component/presentation/ReportForPrint"
 import SumUp from "../../component/presentation/SumUp"
 
