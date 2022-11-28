@@ -9,20 +9,12 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { sendAuthGetRequest } from "../../../common/utils";
 
-const rows = [
-    { id: 1, account: 'Hello', name: 'World', email: "hihih", role: "hah", title: "asa", status: "sss"},
-    { id: 2, account: 'Hello', name: 'World', email: "hihih", role: "hah", title: "asa", status: "sss"},
-    { id: 3, account: 'Hello', name: 'World', email: "hihih", role: "hah", title: "asa", status: "sss"},
-    { id: 4, account: 'Hello', name: 'World', email: "hihih", role: "hah", title: "asa", status: "sss"},
-    { id: 5, account: 'Hello', name: 'World', email: "hihih", role: "hah", title: "asa", status: "sss"},
-  ];
-
   const columns = [
-    { field: "â", headerName: 'Tên đề tài', width: 150, flex: 1},
-    { field: "âs", headerName: 'Tên tiếng Anh', width: 150, flex: 1},
-    { field: 'email', headerName: 'GVHD', width: 150, flex: 2 },
-    { field: 'account', headerName: 'Học kỳ', width: 150, flex: 1},
-    { field: 'accounts', headerName: 'Niên khoá', width: 150, flex: 1},
+    { field: "name", headerName: 'Tên đề tài', width: 150, flex: 3},
+    { field: "enName", headerName: 'Tên tiếng Anh', width: 150, flex: 3},
+    { field: 'lecturerName', headerName: 'GVHD', width: 150, flex: 1 },
+    { field: 'semesterName', headerName: 'Học kỳ', width: 150, flex: 0.5},
+    { field: 'schoolYear', headerName: 'Niên khoá', width: 150, flex: 0.5},
     { field: 'id', headerName: "", with: 150, flex: 1, renderCell: InfoButton}
   ];
 
@@ -55,10 +47,14 @@ const ThesisData = ({filter = false}) =>{
     const getData = async () => {
       setOnProcess(true);
       let result = await sendAuthGetRequest(filter? "/api/topic/all" : "/api/topic/currentSemester");
+      console.log(result);
       if(result.status == 200) {
         setOnProcess(false);
         let arr = result.data.map((topic, index) => ({
           no: index + 1,
+          semesterName: topic.semester.semesterCode == "1"? "I": "II",
+          schoolYear: topic.semester.startYear + " - " + topic.semester.endYear,
+          lecturerName: topic.lecturer.title + ". " + topic.lecturer.name,
           ...topic
         }))
         setRows(arr);
@@ -134,6 +130,12 @@ const ThesisData = ({filter = false}) =>{
                       NoRowsOverlay: NoRowOverlay,
                       Pagination: CustomPagination,
                     }} 
+                    sx={{
+                      '&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell': { py: '8px' },
+                      '&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell': { py: '11px' },
+                      '&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell': { py: '12px' },
+                    }}
+                    getRowHeight={() => 'auto'}
                     rows={rows} 
                     columns={columns} 
                     getRowClassName={(params) => `${params.row.no%2 != 0? "odd": "even"}-row`}

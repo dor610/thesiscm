@@ -63,16 +63,16 @@ const SumUp = ({thesisData}) => {
                     <Typography>{thesisData? thesisData.topic.enName: "Tên tiếng Anh"}</Typography>
                     <Divider />
                     <Grid container sx={{width: `100%`}}>
-                        <Grid xs={6}><Typography>Thời gian: {thesisData? thesisData.time: ""}</Typography></Grid>
-                        <Grid xs={6}><Typography>Địa điểm: {thesisData? thesisData.place: ""}</Typography></Grid>
+                        <Grid xs={6}><Typography><span style={{fontWeight: `bold`}}>Thời gian:</span> {thesisData? thesisData.time: ""}</Typography></Grid>
+                        <Grid xs={6}><Typography><span style={{fontWeight: `bold`}}>Địa điểm:</span> {thesisData? thesisData.place: ""}</Typography></Grid>
                     </Grid>
                     <Grid container sx={{width: `100%`}}>
-                        <Grid xs={12} md={6}><Typography>Sinh viên thực hiện: {thesisData? thesisData.student.name: ""}</Typography></Grid>
-                        <Grid xs={12} md={6}><Typography>MSSV: {thesisData? thesisData.student.studentCode: ""}</Typography></Grid>
+                        <Grid xs={12} md={6}><Typography><span style={{fontWeight: `bold`}}>Sinh viên thực hiện:</span> {thesisData? thesisData.student.name: ""}</Typography></Grid>
+                        <Grid xs={12} md={6}><Typography><span style={{fontWeight: `bold`}}>MSSV:</span> {thesisData? thesisData.student.studentCode: ""}</Typography></Grid>
                     </Grid>
                     <Grid container sx={{width: `100%`}}>
-                        <Grid xs={12} md={6}><Typography>Giáo viên hướng dẫn: {thesisData? thesisData.lecturer.name: ""}</Typography></Grid>
-                        <Grid xs={12} md={6}><Typography>MSGV: {thesisData? thesisData.lecturer.account: ""}</Typography></Grid>
+                        <Grid xs={12} md={6}><Typography><span style={{fontWeight: `bold`}}>Giáo viên hướng dẫn:</span> {thesisData? thesisData.lecturer.name: ""}</Typography></Grid>
+                        <Grid xs={12} md={6}><Typography><span style={{fontWeight: `bold`}}>MSGV:</span> {thesisData? thesisData.lecturer.account: ""}</Typography></Grid>
                     </Grid>
                 </Stack>
             </Paper>
@@ -84,10 +84,10 @@ const SumUp = ({thesisData}) => {
                             <Divider />
                             <Grid container sx={{width: `100%`, paddingTop: `10px`}} gap={1}>
                                 <Grid xs={12}>
-                                    <Typography>Báo cáo: {thesisData && thesisData.topic.reportFile?<Link target={"_blank"} href={thesisData.topic.reportFile.url}>File báo cáo</Link>:<Typography>Chưa được cập nhật</Typography>}</Typography>
+                                    <Typography>Báo cáo: {thesisData && thesisData.topic.reportFile?<Link target={"_blank"} href={thesisData.topic.reportFile.url}>File báo cáo</Link>:<span>Chưa được cập nhật</span>}</Typography>
                                 </Grid>
                                 <Grid xs={12}>
-                                    <Typography>Mã nguồn: {thesisData && thesisData.topic.sourceCode? <Link target={"_blank"} href={thesisData.topic.sourceCode.url}>File mã nguồn</Link>:<Typography>Chưa được cập nhật</Typography>}</Typography>
+                                    <Typography>Mã nguồn: {thesisData && thesisData.topic.sourceCode? <Link target={"_blank"} href={thesisData.topic.sourceCode.url}>File mã nguồn</Link>:<span>Chưa được cập nhật</span>}</Typography>
                                 </Grid>
                             </Grid>
                         </Stack>

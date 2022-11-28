@@ -21,7 +21,7 @@ const InfoButton = (props) => {
     }, [hasFocus]);
   
     const onClick = () =>{
-      router.push(`/user/course/student/${value}`);
+      router.push(`/user/course/${value}`);
     }
 
     return (

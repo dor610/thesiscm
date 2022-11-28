@@ -1,14 +1,18 @@
-import { BarChart, CalendarMonth, Group, Logout, MenuBook, PendingActions, Person, School, Search } from "@mui/icons-material";
+import { BarChart, CalendarMonth, Group, Home, Logout, MenuBook, Notifications, PendingActions, Person, School, Search } from "@mui/icons-material";
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUserInfo } from "../../common/localStorage";
+import { setAccount, setIsLoggedIn, setIsLoggedOut, setUserData, setUserId } from "../../features/userSlice";
 
 const menuList = [
+    { title: "Tổng quan", icon: <Home />, link: "/user", name: "dashboard"},
     { title: "Nhóm học phần", icon: <School />, link: "/user/course", name: "course"},
     { title: "Đề tài luận văn", icon: <MenuBook />, link: "/user/topic", name: "topic"},
     { title: "Lịch báo cáo", icon: <PendingActions />, link: "/user/schedule", name: "schedule"},
     { title: "Tài khoản", icon: <Person />, link: "/user/account", name: "account"},
+    { title: "Thông báo", icon: <Notifications />, link: "/user/notification", name: "notification"},
     { title: "Tìm kiếm", icon: <Search />, link: "/user/search", name: "search"},
     
 ];
@@ -17,9 +21,14 @@ const NavBar = ({open}) =>{
 
     const currentPage = useSelector(state => state.path.currentPage);
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const logout = () => {
         removeUserInfo();
+        dispatch(setUserData({}));
+        dispatch(setAccount(""));
+        dispatch(setUserId(""));
+        dispatch(setIsLoggedOut(true));
         router.push("/login");
     }
     return (

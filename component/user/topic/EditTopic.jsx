@@ -147,14 +147,14 @@ const EditTopic = ({open, setOpen, data}) => {
 
     return (
         <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Tạo mới đề tài luận văn</DialogTitle>
+        <DialogTitle>Chỉnh sửa đề tài luận văn</DialogTitle>
         <DialogContent>
           {onProcess? <LinearProgress />: <></>}
           {isError? <Alert severity="error">{message}</Alert>: <></>}
           {isSuccess? <Alert severity="primary">{message}</Alert>: <></>}
           <Stack direction={"column"} sx={{gap: '20px'}}>
           <DialogContentText>
-            Tạo mới một đề tài luận văn cho một hoặc một nhóm sinh viên trong học kỳ hiện tại
+          Chỉnh sửa thông tin của một đề tài luận văn trong học kỳ hiện tại
           </DialogContentText>
           <Stack gap={2} alignItems={"center"} direction={"column"} sx={{width: `100%`}} >
             <TextField fullWidth color="secondary" error={!viNameValid} required value={viName} onChange={(e) => (setViName(e.target.value))} label={"Tên tiếng Việt"}

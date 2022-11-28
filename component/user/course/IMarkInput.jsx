@@ -4,38 +4,33 @@ import { Stack } from "@mui/system";
 import Image from "next/image";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { sendAuthGetRequest } from "../../../common/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { sendAuthGetRequest, sendAuthPostResquest, sendMediaPostRequest } from "../../../common/utils";
 import IMark from "./IMark";
+import { successNotify, errorNotify } from "../../../common/toastify";
+import { setReloadImark } from "../../../features/commonSlice";
 
-const IMarkInput = ({step, setIsNext}) => {
+const IMarkInput = ({step, setIsNext, setOpen}) => {
 
+    const dispatch = useDispatch();
     const account = useSelector(state => state.user.account);
     const [onProcess, setOnProcess] = useState(false);
     const [students, setStudents] = useState({});
 
     const [student, setStudent] = useState("");
+    const [userData, setUserData] = useState(null);
+    const [studentData, setStudentData] = useState(null);
     const [lecturerComment, setLecturerComment] = useState("");
     const [deanComment, setDeanComment] = useState("");
     const [reason, setReason] = useState("");
+    const [other, setOther] = useState(["","","",""]);
     const [file, setFile] = useState(null);
 
     const [fileName, setFileName] = useState("Chọn file");
-    const [fileUrl, setFileUrl] = useState("");
-
-    useEffect(() => {
-        console.log(step);
-    })
-
+    
     useEffect(() => {
         getStudents();
     }, [])
-
-    useEffect(() => {
-        if(file){
-            setFileUrl(URL.createObjectURL(file));
-        }
-    }, [file])
 
     useEffect(() => {
         if(student == "") {
@@ -46,7 +41,7 @@ const IMarkInput = ({step, setIsNext}) => {
     }, [student])
 
     const getStudents = async () => {
-        let result = await sendAuthGetRequest("/api/student/current?account="+account);
+        let result = await sendAuthGetRequest("/api/course/imark/student?account="+account);
         if(result.status === 200){
             let data = {};
             result.data.forEach(s => {
@@ -56,23 +51,58 @@ const IMarkInput = ({step, setIsNext}) => {
         } 
     }
 
+    useEffect(() => {
+        if(step == 3){
+            create();
+        }
+    }, [step]);
+    
+    const create = async () => {
+        setOnProcess(true);
+        let formData = new FormData();
+        formData.append("studentCode", studentData.studentCode);
+        formData.append("lecturer", userData.id);
+        formData.append("file", file);
+        formData.append("lecturerComment", lecturerComment);
+        formData.append("deanComment", deanComment);
+        formData.append("reason", reason);
+        formData.append("other", JSON.stringify(other));
+        let result = await sendMediaPostRequest("/api/course/imark", formData);
+        console.log(result);
+        if(result.status == 200 && result.data) {
+            successNotify("Nhập điểm I cho sinh viên " + studentData.name +" thành công");
+            setOnProcess(false);
+            setTimeout(() => {
+                setOpen(false);
+            }, 3000);
+            dispatch(setReloadImark(true));
+        } else {
+            setOnProcess(false);
+            errorNotify("Có lỗi xảy ra, vui lòng thử lại sau!"); setTimeout(() => {
+                setOpen(false);
+            }, 3000);
+
+        }
+    }
+
     return (
         <>
         {step == 0? <Stack direction={"column"} sx={{width: `60%`, py: `50px`, mx: `auto`}} gap={2}>
             <Typography variant="h5">Chọn sinh viên cần xét điểm I</Typography>
             <TextField label="Chọn sinh viên" select fullWidth value = {student} onChange={e => setStudent(e.target.value)} >
-                {Object.keys(students).map((id) => (
+                {Object.keys(students).length  > 0? Object.keys(students).map((id) => (
                         <MenuItem  key={"individual_"+students[id]} value={id}>
                             {students[id]}
                         </MenuItem >
-                    ))}
+                    )): <Stack alignItems={"center"} justifyContent="center"><CircularProgress /></Stack>}
             </TextField>
         </Stack>: step == 1? <IMark reason={reason} setReason={setReason} lecturerComment={lecturerComment} setLecturerComment={setLecturerComment}
-         account={account} deanComment={deanComment} setDeanComment={setDeanComment} student={student}/>: step == 2?<Stack>
+         account={account} deanComment={deanComment} setDeanComment={setDeanComment} student={student} other={other} setOther={setOther} 
+         studentData={studentData} setStudentData={setStudentData} userData={userData} setUserData={setUserData} />: step == 2?<Stack>
             <Stack direction={"column"} sx={{width: `100%`, height: `100%`, overflow: `auto`}} gap={2}>
                 <Stack gap={2} direction={"row"} sx={{width: `60%`, py: `20px`, mx: `auto`}} >
                     <Button variant="contained" startIcon={<FileUpload />} sx={{width: `150px`}} component="label" >
-                        Tải lên
+                        Chọm tệp
                         <input hidden onChange={(e) => {setFile(e.target.files[0]); setFileName(e.target.files[0].name)}} accept="image/*" type="file" />
                     </Button>
                     <TextField value={fileName} onChange={e => e.preventDefault()} fullWidth/>
@@ -82,8 +112,9 @@ const IMarkInput = ({step, setIsNext}) => {
                 </div>
             </Stack>
         </Stack>:<Stack direction={"column"} gap={2} alignItems="center" justifyContent={"center"} sx={{width: `60%`, py: `50px`, mx: `auto`}}>
-                <CircularProgress />
-                <Typography>Đang xử lý...</Typography>
+                {onProcess? <>
+                    <CircularProgress />
+                <Typography>Đang xử lý...</Typography></>:<></>}
             </Stack>}
         </>
     )

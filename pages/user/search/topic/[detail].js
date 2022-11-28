@@ -163,7 +163,7 @@ const Topic = () => {
                 width: `100%`,
                 height: `100%`
                 }}>
-                   <TopicDocument id={topicData ? topicData.id: ""} />
+                   <TopicDocument topicData={topicData} id={topicData ? topicData.id: ""} />
             </TabPanel>
           </TabContext>
     </Stack>

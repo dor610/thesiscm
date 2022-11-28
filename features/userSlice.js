@@ -2,10 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     account: "",
+    id: "",
     data: {},
     loginSuccess: false,
     loginFail: false,
     isLoggedIn: false,
+    isLoggedOut: false,
 
     userView: "",
 };
@@ -20,6 +22,9 @@ const userSlice = createSlice({
         setUserData: (state, action) =>{
             state.data = action.payload; 
         },
+        setUserId: (state, action) => {
+            state.id = action.payload;
+        },
         setLoginSuccess: (state, action) =>{
             state.loginSuccess = action.payload;
         },
@@ -28,6 +33,9 @@ const userSlice = createSlice({
         },
         setIsLoggedIn: (state, action) =>{
             state.isLoggedIn = action.payload;
+        },
+        setIsLoggedOut: (state, action) => {
+            state.isLoggedOut = action.payload;
         },
         resetLoginStatus: (state, action) =>{
             state.loginFail = false;
@@ -40,6 +48,6 @@ const userSlice = createSlice({
     }
 });
 
-export const {setAccount, setUserData, setLoginFail, setLoginSuccess, setIsLoggedIn, resetLoginStatus, setUserView} = userSlice.actions;
+export const {setAccount, setUserData, setUserId, setLoginFail, setIsLoggedOut, setLoginSuccess, setIsLoggedIn, resetLoginStatus, setUserView} = userSlice.actions;
 
 export default userSlice.reducer;

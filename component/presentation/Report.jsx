@@ -1,5 +1,5 @@
 import { Save, Send } from "@mui/icons-material";
-import { Alert, BottomNavigation, BottomNavigationAction, Button, Divider, LinearProgress, Paper, SpeedDial, SpeedDialAction, SpeedDialIcon, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography, Unstable_Grid2 as Grid } from "@mui/material";
+import { Alert, BottomNavigation, BottomNavigationAction, Button, Divider, LinearProgress, MenuItem, Paper, SpeedDial, SpeedDialAction, SpeedDialIcon, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography, Unstable_Grid2 as Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -18,7 +18,6 @@ const Report = ({thesisData}) =>{
     const [advices, setAdvices] = useState("");
     const [comment, setComment] = useState("");
     const [presentationResult, setPresentationResult] = useState("");
-    const [finalPoint, setFinalPoint] = useState("");
     const [otherThing, setOtherThing] = useState(["", "", "", ""]);
     const [endTime, setEndTime] = useState("");
     const [data, setData] = useState(null);
@@ -75,7 +74,7 @@ const Report = ({thesisData}) =>{
             setAdvices(tData.advices);
             setComment(tData.comment);
             setPresentationResult(tData.result);
-            setFinalPoint(tData.finalPoint);
+            setTotalPoint(tData.finalPoint);
             setEndTime(tData.endTime);
             setOtherThing(tData.other.split(","));
             setData(tData);
@@ -101,13 +100,16 @@ const Report = ({thesisData}) =>{
         if(result.status == 200) {
             result.data.forEach(element => {
                 if(element.creator.account == thesisData.president.account){
-                    setPresidentPoint(Math.round(((element.aTotalPoint + element.bTotalPoint + element.cTotalPoint) + Number.EPSILON) * 100) / 100);
+                    let point = Math.round(((element.aTotalPoint + element.bTotalPoint + element.cTotalPoint) + Number.EPSILON) * 100) / 100;
+                    setPresidentPoint(point);
                 }
                 if(element.creator.account == thesisData.secretary.account){
-                    setSecretaryPoint(Math.round(((element.aTotalPoint + element.bTotalPoint + element.cTotalPoint) + Number.EPSILON) * 100) / 100);
+                    let point = Math.round(((element.aTotalPoint + element.bTotalPoint + element.cTotalPoint) + Number.EPSILON) * 100) / 100;
+                    setSecretaryPoint(point);
                 }
                 if(element.creator.account == thesisData.member.account){
-                    setMemberPoint(Math.round(((element.aTotalPoint + element.bTotalPoint + element.cTotalPoint) + Number.EPSILON) * 100) / 100);
+                    let point = Math.round(((element.aTotalPoint + element.bTotalPoint + element.cTotalPoint) + Number.EPSILON) * 100) / 100;
+                    setMemberPoint(point);
                 }
             });
         }
@@ -119,9 +121,10 @@ const Report = ({thesisData}) =>{
         data.append("qna", qna);
         data.append("advices", advices);
         data.append("comment", comment);
-        data.append("result", resupresentationResult);
-        data.append("finalPoint", finalPoint);
+        data.append("result", presentationResult);
+        data.append("finalPoint", totalPoint);
         data.append("presentation", thesisData.id);
+        data.append("student", thesisData.student.id);
         data.append("account", account);
         data.append("other", otherThing.join(","));
         data.append("endTime", endTime);
@@ -137,7 +140,8 @@ const Report = ({thesisData}) =>{
     }
 
     const writeLogOnSubmit = async () => {
-        let message = data.isSubmitted? userData.name + " đã chỉnh sửa Biên bảng chấm điểm luận văn.": userData.name + " đã gửi Biên bảng chấm điểm luận văn.";
+        console.log(data);
+        let message = data? data.submitted? userData.name + " đã chỉnh sửa Biên bảng chấm điểm luận văn.": userData.name + " đã gửi Biên bảng chấm điểm luận văn.": userData.name + " đã gửi Biên bảng chấm điểm luận văn.";
         let formData = new FormData();
         formData.append("id", thesisData.id);
         formData.append("content", message);
@@ -153,10 +157,11 @@ const Report = ({thesisData}) =>{
         data.append("advices", advices);
         data.append("comment", comment);
         data.append("result", presentationResult);
-        data.append("finalPoint", finalPoint);
+        data.append("finalPoint", totalPoint);
         data.append("presentation", thesisData.id);
         data.append("account", account);
         data.append("endTime", endTime);
+        data.append("student", thesisData.student.id);
         data.append("other", otherThing.join(","));
         let result = await sendAuthPostResquest("/api/report/save", data);
         if(result.status == 200) {
@@ -287,8 +292,16 @@ const Report = ({thesisData}) =>{
                     điểm chữ: {convertNumberMarkToLetterMark(totalPoint)}
                     </Typography>
                 <Typography sx={{fontWeight: `bold`}}>2.6. Kết luận của Hội đồng:</Typography>
-                <Typography sx={{paddingLeft: `20px`}}>Luận văn của sinh viên <input type="text" value={presentationResult} onChange={e=> setPresentationResult(e.target.value)} style={{textAlign: `center` ,width: `200px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>.đạt (không đạt) yêu cầu.</Typography>
-                <Typography sx={{paddingLeft: `20px`}}>Điểm:<input type="text" value={finalPoint} onChange={e => setFinalPoint(e.target.value)} style={{textAlign: `center` ,width: `100px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input></Typography>
+                <Stack direction="row">
+                <Typography sx={{paddingLeft: `20px`}}>Luận văn của sinh viên {thesisData? thesisData.student.name: ""} . </Typography>
+                <TextField component={'span'} variant="standard" sx={{width: `100px`, textAlign: `center`}} value={presentationResult} onChange={e => setPresentationResult(e.target.value)} select>
+                    <MenuItem component={'span'} value={"đạt"}>đạt</MenuItem>
+                    <MenuItem component={'span'} value={"không đạt"}>không đạt</MenuItem>
+                </TextField>
+                <Typography> yêu cầu.
+                </Typography>
+                </Stack>
+                <Typography sx={{paddingLeft: `20px`}}>Điểm: {totalPoint}</Typography>
                 <Typography sx={{marginTop: `30px`}}>Hội đồng kết thúc vào lúc <input type="text" value={endTime} onChange={e => setEndTime(e.target.value)} style={{textAlign: `center` ,width: `200px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>cùng ngày.</Typography>
                 <Grid container sx={{width: `100%`, marginTop: `30px`}}>
                     <Grid xs={5}>

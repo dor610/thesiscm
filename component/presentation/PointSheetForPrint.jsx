@@ -72,6 +72,7 @@ const PointSheetForPrint = ({user , thesisData}) => {
 
     const getData = async () => {
         let result = await sendAuthGetRequest("/api/point/user?account="+user+"&presentation="+thesisData.id);
+        console.log(thesisData.id);
         if(result.status == 200 && result.data) {
             let tData = {
                 ... result.data,

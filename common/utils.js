@@ -157,7 +157,11 @@ export const sendLoginRequest = async (data) =>{
 export const isLoggedIn = async () =>{
     try {
         const token = getData("token");
-        const account = JSON.parse(getData("user")).account;
+        const user = JSON.parse(getData("user"));
+        if(!user){
+            return {status: false, account: ""};
+        }
+        const account = user.account;
         if(token === null) return {status: false, account: ""};
         else {
             const res = await axios({
@@ -165,8 +169,8 @@ export const isLoggedIn = async () =>{
                 headers: generateHeader(),
                 url: url + "/api/user/authenticate?account="+account,
             });
-            if(res.status === 200 && res.data != "") return {status: true, account: res.data};
-            else return {status: false, account: ""};
+            if(res.status === 200 && res.data != "") return {status: true, data: res.data};
+            else return {status: false, data: null};
         }  
     } catch (e) {
         console.log(e);

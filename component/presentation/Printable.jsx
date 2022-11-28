@@ -1,9 +1,23 @@
-import { Box, Divider } from "@mui/material"
+import { Print } from "@mui/icons-material";
+import { Box, Divider, SpeedDial, SpeedDialAction, SpeedDialIcon } from "@mui/material"
 import { Stack } from "@mui/system"
+import { useState } from "react";
 import PointSheetForPrint from "./PointSheetForPrint"
 import ReportForPrint from "./ReportForPrint"
 
 const Printable = ({thesisData}) => {
+
+    
+    const [open, setOpen] = useState(false);
+
+    const print = () => {
+        window.print();
+      }
+
+    const actions = [
+       { icon: <Print />, name: 'In tài liệu', onClick: print},
+    ];
+
     return (
         <Box sx={{width: `100%`, height: `auto`}}>
             <PointSheetForPrint user={thesisData.president.account} thesisData={thesisData}/>
@@ -22,6 +36,24 @@ const Printable = ({thesisData}) => {
                 <Divider />
             </Stack>
             <ReportForPrint printable={true} thesisData={thesisData}/>
+
+            <SpeedDial
+                ariaLabel="SpeedDial"
+                sx={{ position: 'fixed', bottom: `5%`, right: `3%`, "@media print": {display: `none`}}}
+                icon={<SpeedDialIcon />}
+                open={open}
+                onOpen={e => setOpen(true)}
+                onClose={e => setOpen(false)}
+            >
+                {actions.map((action) => (
+                <SpeedDialAction
+                    key={action.name}
+                    icon={action.icon}
+                    tooltipTitle={action.name}
+                    onClick={e => {action.onClick(); setOpen(false)}}
+                />
+                ))}
+            </SpeedDial>
         </Box>
     )
 };

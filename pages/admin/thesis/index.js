@@ -16,6 +16,7 @@ const Thesis = () =>{
     const dispatch = useDispatch();
     const [tab, setTab] = useState('1');
     const [open, setOpen] = useState(false);
+    const [currentSemester, setCurrentSemester] = useState(null);
 
     const [topics, setTopics] = useState([]);
 
@@ -23,25 +24,30 @@ const Thesis = () =>{
         dispatch(setCurrentPage("thesis"));
     })
 
+    useEffect(() => {
+        getCurrentSemester();
+    }, []);
+
+    const getCurrentSemester = async () =>{
+        let result = await sendAuthGetRequest("/api/semester/current");
+        if(result.status === 200) {
+            setCurrentSemester(result.data);
+        }
+    }
+
     return (
     <Stack direction={"column"} spacing={1} sx={{
         width: `100%`,
         height: `100%`
     }}>
-    {open ? <ImportThesis open={open} setOpen={setOpen}/> : <></>}
      <Grid container width={"100%"} alignItems="center">
         <Grid md={9} lg={10} xl={10.5}>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/admin">
-                Home
+                Trang chủ
                 </Link>
-                <Typography color="text.primary">Thesis</Typography>
+                <Typography color="text.primary">Đề tài luận văn</Typography>
             </Breadcrumbs>
-        </Grid>
-        <Grid md={3} lg={2} xl={1.5}>
-            <Button size="large" onClick={() => {setOpen(true)}} variant="contained" startIcon={<Add />}>
-                Import
-            </Button>
         </Grid>
      </Grid>
     <TabContext value={tab} sx={{
@@ -50,7 +56,7 @@ const Thesis = () =>{
     }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <TabList onChange={(e, v) => {setTab(v)}} aria-label="lab API tabs example">
-            <Tab label="Học kỳ hiện tại" value="1" />
+            <Tab label={currentSemester? currentSemester.semesterName : "Học kỳ hiện tại"} value="1" />
             <Tab label="Tất cả" value="2" />
           </TabList>
         </Box>

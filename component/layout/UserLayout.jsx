@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react";
 import NavBar from "../user/NavBar";
+import Authorization from "./Authorization";
 
 const drawerWidth = 240;
 
@@ -126,6 +127,7 @@ export default function UserLayout({children}) {
           },
       },}}>
         <CssBaseline />
+        <Authorization/>
         <AppBar position="fixed" open={open} sx={{backgroundColor: `background.base`}}>
           <Toolbar>
            <IconButton
@@ -137,7 +139,7 @@ export default function UserLayout({children}) {
               <MenuIcon />
             </IconButton>
             <Typography sx={{paddingLeft: `15px`}} variant="h6" noWrap component="div">
-              Quản lý luận văn
+            Hệ thống hỗ trợ quản lý luận văn tốt nghiệp ngành Kỹ thuật phần mềm
             </Typography>
           </Toolbar>
         </AppBar>

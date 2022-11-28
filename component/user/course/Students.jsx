@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { miliSecToDateOnly } from "../../../common/utils";
 import CustomPagination from "../../common/CustomPagination";
 import NoRowOverlay from "../../common/NoRowOverlay";
-import InfoButton from "./InfoButton";
+import StudentInfoButton from "./StudentInfoButton";
 
 
 const columns = [
@@ -13,7 +13,7 @@ const columns = [
     { field: 'name', headerName: 'Họ và tên', width: 150, flex: 2},
     { field: 'dob', headerName: 'Ngày sinh', width: 150, flex: 1},
     { field: 'classCode', headerName: 'Mã lớp', width: 150, flex: 1},
-    { field: 'id', headerName: "", with: 150, flex: 1, renderCell: InfoButton}
+    { field: 'id', headerName: "", with: 150, flex: 1, renderCell: StudentInfoButton}
   ];
 
 const Students = ({classCode = "", students = []}) => {

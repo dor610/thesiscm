@@ -200,7 +200,7 @@ const PointSheet = ({thesisData}) => {
     }
 
     const writeLogOnSubmit = async () => {
-        let message = data.isSubmitted? userData.name + " đã chỉnh sửa bảng điểm của mình.": userData.name + " đã xác nhận bảng điểm của mình.";
+        let message =  (data && data.submitted)? userData.name + " đã chỉnh sửa bảng điểm của mình.": userData.name + " đã xác nhận bảng điểm của mình.";
         let formData = new FormData();
         formData.append("id", thesisData.id);
         formData.append("content", message);

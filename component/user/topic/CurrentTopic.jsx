@@ -7,10 +7,12 @@ import { LinearProgress, MenuItem, Skeleton, TextField, Typography } from "@mui/
 import { useEffect, useState } from "react";
 import { sendAuthGetRequest } from "../../../common/utils";
 import { useSelector } from "react-redux";
+import TopicStatus from "../../common/TopicStatus";
 
   const columns = [
     { field: "no", headerName: 'STT', width: 150, flex: 0.5},
     { field: "name", headerName: 'Tên đề tài', width: 150, flex: 4},
+    { field: "status", headerName: 'Trạng thái', width: 150, flex: 1, renderCell: TopicStatus},
     { field: 'studentCode', headerName: 'MSSV', width: 150, flex: 1},
     { field: "studentName", headerName: 'Sinh viên', width: 150, flex: 2},
     { field: 'id', headerName: "", with: 150, flex: 1, renderCell: InfoButton}

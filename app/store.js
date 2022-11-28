@@ -5,6 +5,7 @@ import semesterSlice from "../features/semesterSlice";
 import courseSlice from '../features/courseSlice';
 import topicSlice from '../features/topicSlice';
 import presentationSlice from '../features/presentationSlice';
+import commonSlice from '../features/commonSlice';
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
       course: courseSlice,
       topic: topicSlice,
       presentation: presentationSlice,
+      common: commonSlice,
     },
     middleware: (getDefaultMiddleware) => [...getDefaultMiddleware({thunk:false})],
   });

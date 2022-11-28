@@ -13,7 +13,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import DefaultLayout from '../component/layout/DefaultLayout';
 import WebSocket from '../component/layout/WebSocket';
-import Authorization from '../component/layout/Authorization';
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.Layout || DefaultLayout;
@@ -24,7 +23,6 @@ function MyApp({ Component, pageProps }) {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline/>
         <WebSocket/>
-        <Authorization/>
         <Layout>
         <Component {...pageProps} />
         </Layout>

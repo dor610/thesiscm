@@ -1,5 +1,5 @@
 import { ArrowBackIos, ArrowBackIosNew } from "@mui/icons-material";
-import { Alert, Breadcrumbs, Button, Divider, IconButton, LinearProgress, MenuItem, TextField, Tooltip, Typography, Unstable_Grid2 as Grid} from "@mui/material";
+import { Alert, Breadcrumbs, Button, Checkbox, Chip, Divider, FormControl, IconButton, InputLabel, LinearProgress, ListItemText, MenuItem, OutlinedInput, Select, TextField, Tooltip, Typography, Unstable_Grid2 as Grid} from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import AdminLayout from "../../../component/layout/AdminLayout";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -10,11 +10,23 @@ import { setUserRoles } from "../../../features/userSlice";
 import Link from "next/link";
 import { setCurrentPage } from "../../../features/pathSlice";
 
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 const CreateUser = () =>{
 
     const dispatch = useDispatch();
     const [onProcess, setOnProcess] = useState(false);
-    const [userRoles, setUserRoles] = useState([]);
+    const [userRoles, setUserRoles] = useState({});
     const [userTitles, setUserTitles] = useState([]);
 
     const [createSuccess, setCreateSuccess] = useState(false);
@@ -24,14 +36,14 @@ const CreateUser = () =>{
     const [nameValid, setNameValid] = useState(true);
     const [emailValid, setEmailValid] = useState(true);
     const [phoneValid, setPhoneValid] = useState(true);
-    const [roleValid, setRoleValid] = useState(true);
     const [titleValid, setTitleValid] = useState(true);
 
     const [account, setAccount] = useState("");
     const [userName, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [role, setRole] = useState("1");
+    const [role, setRole] = useState("0");
+    const [roleArr, setRoleArr] = useState([]);
     const [title, setTitle] = useState("1");
 
     useEffect(() => {
@@ -39,7 +51,7 @@ const CreateUser = () =>{
     })
 
     useEffect(() =>{
-        if(userRoles.length == 0) {
+        if(Object.keys(userRoles).length == 0) {
             getRoles();
         }
         if(userTitles.length == 0) {
@@ -55,6 +67,16 @@ const CreateUser = () =>{
         resetData();
     }
 
+    const onRoleChange = (event) => {
+        const {
+          target: { value },
+        } = event;
+        setRoleArr(
+          // On autofill we get a stringified value.
+          typeof value === 'string' ? value.split(',') : value,
+        );
+      };
+
     const register = async () =>{
         setCreateSuccess(false);
         setCreateFail(false)
@@ -66,7 +88,7 @@ const CreateUser = () =>{
             data.append("name", userName);
             data.append("email", email);
             data.append("phone", phone);
-            data.append("role", role);
+            data.append("role", );
             data.append("title", title);
 
             let res = await sendAuthPostResquest("/api/user", data);
@@ -113,7 +135,7 @@ const CreateUser = () =>{
         setUserName("");
         setEmail("");
         setPhone("");
-        setRole("1");
+        setRole("0");
         setTitle("1");
     }
 
@@ -128,12 +150,14 @@ const CreateUser = () =>{
 
     const getRoles = async () =>{
         let res = await sendAuthGetRequest("/api/user/role");
+        console.log(res);
         if(res.status === 200){
-            let arr = [];
-            Object.keys(res.data).map((key) =>{
-                arr.push({value: key, label: res.data[key]});
-            });
-            setUserRoles(arr);
+            let obj = {};
+            Object.keys(res.data).map(key =>{
+                obj[res.data[key]] = key;
+            })
+            console.log(obj);
+            setUserRoles(obj);
         }
     }
 
@@ -151,9 +175,9 @@ const CreateUser = () =>{
     return (
         <Stack direction={"column"} spacing={2}>
             <Breadcrumbs aria-label="breadcrumb">
-                <Link underline="hover" color="inherit" href="/admin">Home</Link>
-                <Link underline="hover" color="inherit" href="/admin/user">User</Link>
-                <Typography color="text.primary">Create</Typography>
+                <Link underline="hover" color="inherit" href="/admin">Trang chủ</Link>
+                <Link underline="hover" color="inherit" href="/admin/user">Người dùng</Link>
+                <Typography color="text.primary">Tạo mới</Typography>
             </Breadcrumbs>
             <Stack direction="row" 
                     alignItems="center"
@@ -205,13 +229,34 @@ const CreateUser = () =>{
                     width: `100%`,
                     gap: `40px`
                 }}>
-                    <TextField fullWidth color="secondary" select={userRoles.length > 0} required value={role} onChange={(e) => {setRole(e.target.value)}} label="Chức vụ">
-                    {userRoles.length > 0 ? userRoles.map((option) => (
-                        <MenuItem  key={option.value+option.label.replace(/\s/, "")} value={option.value}>
-                        {option.label}
-                        </MenuItem >
-                    )): <></>}
-                    </TextField>
+                    <FormControl fullWidth>
+                        <InputLabel color="secondary" id="multiple-student-checkbox-label">Vai trò *</InputLabel>
+                        <Select
+                            labelId="multiple-student-checkbox-label"
+                            id="multiple-student-checkbox"
+                            multiple
+                            color="secondary"
+                            fullWidth
+                            value={roleArr}
+                            input={<OutlinedInput label="Vai trò *" />}
+                            onChange={onRoleChange}
+                            renderValue={(selected) => (
+                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                {selected.map((value) => (
+                                    <Chip key={value} label={value} />
+                                ))}
+                                </Box>
+                            )}
+                            MenuProps={MenuProps}
+                            >
+                            {Object.keys(userRoles).map((name) => (
+                                <MenuItem  key={"individual_"+name} value={name}>
+                                <Checkbox checked={roleArr.indexOf(name) > -1} />
+                                <ListItemText primary={name} />
+                                </MenuItem >
+                            ))}
+                            </Select>
+                    </FormControl>
                     <TextField fullWidth color="secondary" select={userTitles.length > 0} required value={title} onChange={(e) => {setTitle(e.target.value)}} label="Học hàm/ Học vị">
                     {userTitles.length > 0 ? userTitles.map((option) => (
                         <MenuItem  key={option.value+option.label.replace(/\s/, "")} value={option.value}>

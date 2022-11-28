@@ -5,10 +5,9 @@ import { getData } from "../../../common/localStorage";
 import { miliSecToDateOnly, sendAuthGetRequest } from "../../../common/utils";
 
 
-const IMark = ({account, student, reason, setReason, lecturerComment, deanComment, setLecturerComment, setDeanComment}) => {
+const IMark = ({account, student, reason, setReason, lecturerComment, deanComment, setLecturerComment, setDeanComment, other, setOther,
+                userData, setUserData, studentData, setStudentData}) => {
 
-    const [userData, setUserData] = useState(null);
-    const [studentData, setStudentData] = useState(null);
     const [semester, setSemester] = useState(null);
 
     useEffect(() => {
@@ -32,6 +31,30 @@ const IMark = ({account, student, reason, setReason, lecturerComment, deanCommen
         if (result.status == 200) {
             setStudentData(result.data);
         }
+    }
+
+    const onPhoneNumberChange = (value) => {
+        let arr = [...other];
+        arr[0] = value;
+        setOther(arr);
+    }
+
+    const onDateChange = (value) =>{
+        let arr = [...other];
+        arr[1] = value;
+        setOther(arr);
+    }
+
+    const onMonthChange = (value) => {
+        let arr = [...other];
+        arr[2] = value;
+        setOther(arr);
+    }
+
+    const onYearChange = (value) => {
+        let arr = [...other];
+        arr[3] = value;
+        setOther(arr);
     }
 
     const getSemester = async () =>{
@@ -76,7 +99,7 @@ const IMark = ({account, student, reason, setReason, lecturerComment, deanCommen
                 </Stack>
                 <Typography>
                 Số điện thoại liên hệ:  
-                <input type="text" style={{textAlign: `left` ,width: `65%`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>
+                <input type="text" value={other[0]} onChange={e => onPhoneNumberChange(e.target.value)} style={{textAlign: `left` ,width: `65%`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>
                 </Typography>
                 <Typography>
                 <span style={{paddingLeft: `30px`}}>Tôi kính gửi đơn này đến Ban Chủ nhiệm Khoa, Phòng Đào tạo và quý Thầy/Cô giảng </span>
@@ -106,10 +129,9 @@ const IMark = ({account, student, reason, setReason, lecturerComment, deanCommen
                     <Grid xs={7}>
                         <Stack direction="column" alignItems={"center"} sx={{width: `100%`}}>
                         <Typography><i>Cần Thơ ,
-                            ngày<input type="text" style={{textAlign: `center` , width: `30px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>
-                            tháng 
-                            <input type="text" style={{textAlign: `center` , width: `30px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>
-                            năm <input type="text" style={{textAlign: `center` , width: `50px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input></i></Typography>
+                            ngày <input type="text" value={other[1]} onChange={e => onDateChange(e.target.value)} style={{textAlign: `center` , width: `30px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>
+                            tháng <input type="text" value={other[2]} onChange={e => onMonthChange(e.target.value)} style={{textAlign: `center` , width: `30px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input>
+                            năm <input type="text" value={other[3]} onChange={e => onYearChange(e.target.value)} style={{textAlign: `center` , width: `50px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}></input></i></Typography>
                         <Typography><b>Người viết đơn</b></Typography>
                         <span type="text" style={{textAlign: `center` , marginTop: `60px`,width: `200px`, border: `none`, outline: `none`, borderBottom: `1px dashed black`, fontSize: `13pt`}}>
                             {studentData? studentData.name: ""}

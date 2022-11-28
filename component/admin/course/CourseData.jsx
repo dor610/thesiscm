@@ -101,26 +101,7 @@ const CourseData = ({filter = false}) =>{
     return (
         <Stack direction={"column"} gap={1} sx={{
           width: `100%`,
-          height: `100%`,
-          '& .odd-row': {
-              bgcolor: (theme) =>
-                getBackgroundColor(theme.palette.background.paper, theme.palette.mode),
-              '&:hover': {
-                bgcolor: (theme) =>
-                  getHoverBackgroundColor(theme.palette.background.base, theme.palette.mode),
-              },
-            },
-          '& .even-row': {
-              bgcolor: (theme) =>
-                getBackgroundColor(theme.palette.info.main, theme.palette.mode),
-              '&:hover': {
-                bgcolor: (theme) =>
-                  getHoverBackgroundColor(
-                      theme.palette.info.main,
-                    theme.palette.mode,
-                  ),
-              },
-          },
+          height: `100%`
         }}>
         {!filter? <></>:
         <Grid container alignItems={"center"} gap={2}>

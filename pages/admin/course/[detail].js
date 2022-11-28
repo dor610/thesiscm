@@ -75,12 +75,12 @@ const Detail = () =>{
             <Grid md={9} lg={10} xl={10.5}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link underline="hover" color="inherit" href="/admin">
-                    Home
+                    Trang chủ
                     </Link>
                     <Link underline="hover" color="inherit" href="/admin/course">
-                    Course
+                    Nhóm học phần
                     </Link>
-                    <Typography color="text.primary">detail</Typography>
+                    <Typography color="text.primary">Chi tiết</Typography>
                 </Breadcrumbs>
             </Grid>
             <Grid md={3} lg={2} xl={1.5}>

@@ -1,5 +1,5 @@
 import { TabContext, TabList, TabPanel } from "@mui/lab"
-import { Unstable_Grid2 as Grid, Tab, Typography, Button } from "@mui/material"
+import { Unstable_Grid2 as Grid, Tab, Typography, Button, SpeedDial, SpeedDialIcon, SpeedDialAction } from "@mui/material"
 import { Box, Stack } from "@mui/system"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -11,6 +11,8 @@ import Printable from "../../component/presentation/Printable"
 import Report from "../../component/presentation/Report"
 import ReportForPrint from "../../component/presentation/ReportForPrint"
 import SumUp from "../../component/presentation/SumUp"
+import Authorization from "../../component/layout/Authorization";
+import { Print } from "@mui/icons-material"
 
 const Presetation = () => {
 
@@ -41,9 +43,10 @@ const Presetation = () => {
     return (
         <Box sx={{width: `100%`, height: `100%`}}>
             <TabContext value={tab} sx={{width: `100%`}}>
+                <Authorization/>
                 <Stack direction={"row"} sx={{ borderBottom: 1, borderColor: 'divider', "@media print": {display: `none`} }}>
                 <Stack direction={"row"} sx={{width: `35%`, height: `50px`, px: `20px`}} alignItems="center">
-                    <Link href={"/user/course"}><Typography variant="h5">Logo</Typography></Link>
+                    <Link href={"/user/course"}><Typography variant="h5">Thesiscm</Typography></Link>
                 </Stack>   
                 <TabList 
                     variant="scrollable"

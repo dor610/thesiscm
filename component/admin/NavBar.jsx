@@ -1,28 +1,34 @@
-import { BarChart, CalendarMonth, Group, Logout, MenuBook, PendingActions, Person, School, Search } from "@mui/icons-material";
+import { AccessTime, BarChart, CalendarMonth, Group, Logout, MenuBook, PendingActions, Person, School, Search } from "@mui/icons-material";
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeUserInfo } from "../../common/localStorage";
+import { setAccount, setIsLoggedOut, setUserData, setUserId } from "../../features/userSlice";
 
 const menuList = [
     { title: "Thống kê", icon: <BarChart />, link: "/admin", name: "dashboard"},
     { title: "Nhóm học phần", icon: <School />, link: "/admin/course", name: "course"},
     { title: "Người dùng", icon: <Person />, link: "/admin/user", name: "user" },
-    { title: "Thời gian học kỳ", icon: <PendingActions />, link: "/admin/semester", name: "semester"},
+    { title: "Học kỳ", icon: <AccessTime />, link: "/admin/semester", name: "semester"},
+    { title: "Lịch báo cáo", icon: <PendingActions />, link: "/admin/schedule", name: "schedule"},
     { title: "Đề tài luận văn", icon: <MenuBook />, link: "/admin/thesis", name: "thesis"},
-    { title: "Tìm kiếm", icon: <Search />, link: "/user/search", name: "search"},
+    { title: "Tìm kiếm", icon: <Search />, link: "/admin/search", name: "search"},
     
 ];
 
 const NavBar = ({open}) =>{
 
     const currentPage = useSelector(state => state.path.currentPage);
-
     const router = useRouter();
+    const dispatch = useDispatch();
 
     const logout = () => {
         removeUserInfo();
+        dispatch(setUserData({}));
+        dispatch(setAccount(""));
+        dispatch(setUserId(""));
+        dispatch(setIsLoggedOut(true));
         router.push("/login");
     }
 

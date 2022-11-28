@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { removeUserInfo, setData } from "../../common/localStorage";
 import { errorNotify, notify } from "../../common/toastify";
 import { sendAuthGetRequest, sendLoginRequest } from "../../common/utils";
-import { resetLoginStatus, setAccount, setIsLoggedIn, setLoginFail, setLoginSuccess, setUserData } from "../../features/userSlice";
+import { resetLoginStatus, setAccount, setIsLoggedIn, setIsLoggedOut, setLoginFail, setLoginSuccess, setUserData } from "../../features/userSlice";
 
 export default function LoginPage() {
     const dispatch = useDispatch();
@@ -16,6 +16,7 @@ export default function LoginPage() {
     const loginSuccess = useSelector(state => state.user.loginSuccess);
     const loginFail = useSelector(state => state.user.loginFail);
     const isUserLoggedIn = useSelector(state => state.user.isLoggedIn);
+    const isUserLoggedOut = useSelector(state => state.user.isLoggedOut);
     const [onProcess, setOnProcess] = useState(false);
     const [account, setUserAccount] = useState("");
     const [password, setPassword] = useState("");
@@ -23,10 +24,10 @@ export default function LoginPage() {
     const [isPasswordValid, setIsPasswordValid] = useState(true);
     
     useEffect(() =>{
-      if(isUserLoggedIn){
+      if(isUserLoggedIn && !isUserLoggedOut){
          router.push("/");
       }
-    }, [isUserLoggedIn]);
+    }, [isUserLoggedIn, isUserLoggedOut]);
 
     useEffect( () =>{
        if(loginSuccess) {
@@ -83,6 +84,7 @@ export default function LoginPage() {
           dispatch(setAccount(account));
           setData("token", result.authorization);
           dispatch(setLoginSuccess(true));
+          dispatch(setIsLoggedOut(false));
           setOnProcess(false);
         } else {
           dispatch(setLoginFail(true));

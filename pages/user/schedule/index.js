@@ -48,9 +48,9 @@ const Schedule = () => {
                     <Grid md={9} lg={10} xl={10.5}>
                         <Breadcrumbs aria-label="breadcrumb">
                             <Link underline="hover" color="inherit" href="/user">
-                            Home
+                            Trang chủ
                             </Link>
-                            <Typography color="text.primary">Schedule</Typography>
+                            <Typography color="text.primary">Lịch báo cáo</Typography>
                         </Breadcrumbs>
                     </Grid>
                     <Grid md={3} lg={2} xl={1.5}>

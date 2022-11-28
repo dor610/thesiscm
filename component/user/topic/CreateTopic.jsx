@@ -76,9 +76,15 @@ const CreateTopic = ({open, setOpen}) => {
 
         let result = await sendAuthPostResquest("/api/topic", data);
         if(result.status === 200) {
-          reset();
-          setIsSuccess(true);
-          setMessage("Tạo đề tài luận văn thành công");
+          if(!result.data) {
+            setIsSuccess(false);
+            setIsError(true);
+            setMessage("Sinh viên đã có nhóm đề tài, vui lòng chọn lại");
+          } else {
+            reset();
+            setIsSuccess(true);
+            setMessage("Tạo đề tài luận văn thành công");
+          }
         } else {
           setIsSuccess(false);
           setIsError(true);
@@ -157,7 +163,7 @@ const CreateTopic = ({open, setOpen}) => {
                         <MenuItem  key={"topic-type-group"} value={"2"}>Nhóm</MenuItem >
             </TextField> 
             {type == "2"? <FormControl fullWidth>
-                <InputLabel color="secondary" id="multiple-student-checkbox-label">Sinh viên thực hiện * jahjsjdhjahs</InputLabel>
+                <InputLabel color="secondary" id="multiple-student-checkbox-label">Sinh viên thực hiện *</InputLabel>
                 <Select
                     labelId="multiple-student-checkbox-label"
                     id="multiple-student-checkbox"

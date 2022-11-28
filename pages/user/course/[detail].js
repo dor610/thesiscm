@@ -52,12 +52,12 @@ const Detail = () => {
             <Grid md={9} lg={10} xl={10.5}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link underline="hover" color="inherit" href="/user">
-                    Home
+                    Trang chủ
                     </Link>
                     <Link underline="hover" color="inherit" href="/user/course">
-                    Course
+                    Nhóm học phần
                     </Link>
-                    <Typography color="text.primary">Detail</Typography>
+                    <Typography color="text.primary">Chi tiết</Typography>
                 </Breadcrumbs>
             </Grid>
          </Grid>
@@ -65,14 +65,14 @@ const Detail = () => {
         <Divider />
         <Stack direction={"column"} gap={2} sx={{width: `100%`, height: `100%`}}>
             { courseData == null ?<><Typography variant="h5">Học kỳ mới vẫn chưa bắt đầu</Typography></> : <>
-            <Grid gap={2} container sx={{width: `100%`}}>
-                <Grid xs={12} md={5}>{courseData != null? `Mã nhóm: ${parseInt(courseData.classCode) > 9? courseData.classcode: "0"+courseData.classCode}`:
+            <Grid gap={1} container sx={{width: `100%`, py: `10px`}}>
+                <Grid xs={12} md={5}>{courseData != null? <Typography><span style={{fontWeight:'bold'}}>Mã nhóm: </span> {parseInt(courseData.classCode) > 9? courseData.classcode: "0"+courseData.classCode}</Typography>:
                                         <Skeleton variant="text" sx={{ fontSize: '1rem', width: `50%` }} />}</Grid>
-                <Grid xs={12} md={5}>{courseData != null?`Số sinh viên: ${courseData.students.length}`: 
+                <Grid xs={12} md={5}>{courseData != null?<Typography><span style={{fontWeight:'bold'}}>Số sinh viên: </span> {courseData.students.length}</Typography>:
                                         <Skeleton variant="text" sx={{ fontSize: '1rem', width: `50%` }} />}</Grid>
-                <Grid xs={12} md={5}>{courseData != null? courseData.semester.semesterName : 
+                <Grid xs={12} md={5}>{courseData != null? <Typography><span style={{fontWeight:'bold'}}>Học kỳ: </span> {courseData.semester.semesterCode == "1"? "I": "II"}</Typography>:
                                         <Skeleton variant="text" sx={{ fontSize: '1rem', width: `50%` }} />}</Grid>
-                <Grid xs={12} md={5}>{courseData != null?`Niên khoá: ${courseData.semester.startYear +" - " + courseData.semester.endYear}`: 
+                <Grid xs={12} md={5}>{courseData != null?<Typography><span style={{fontWeight:'bold'}}>Niên khoá: </span> {courseData.semester.startYear +" - " + courseData.semester.endYear}</Typography>:
                                         <Skeleton variant="text" sx={{ fontSize: '1rem', width: `50%` }} />}</Grid>
             </Grid>
             {courseData? <Students students={courseData.studentVO.map((data, index) => ({no: index + 1, ...data}))} />: <></>}

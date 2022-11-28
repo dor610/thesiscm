@@ -2,10 +2,12 @@ import { Add, Delete } from "@mui/icons-material";
 import { Button,Unstable_Grid2 as Grid, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, LinearProgress, Alert, Divider, Link } from "@mui/material";
 import { Stack } from "@mui/system";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { miliSecToDate, miliSecToDateOnly, sendAuthGetRequest, sendAuthPostResquest, sendMediaPostRequest } from "../../../common/utils";
 
-const TopicDocument = ({id = ""}) => {
+const TopicDocument = ({id = "", topicData}) => {
 
+    const account = useSelector(state => state.user.account);
     const [onProcess, setOnProcess] = useState(false);
     const [upLoadOpen, setUploadOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
@@ -137,7 +139,7 @@ const TopicDocument = ({id = ""}) => {
                 </Stack>
                 </DialogContent>
                 <DialogActions>
-                <Button color="secondary" onClick={closeUploadDialog}>Cancel</Button>
+                <Button color="secondary" onClick={closeUploadDialog}>Huỷ</Button>
                 <Button color="primary" onClick={upload}>Lưu</Button>
                 </DialogActions>
             </Dialog>
@@ -169,10 +171,10 @@ const TopicDocument = ({id = ""}) => {
                     <Typography>Thông tin về mã nguồn chưa được cập nhật</Typography>}
                 </Grid>
                 <Grid xs={12} md={3} lg={2}>
-                    <Stack direction={{xs: "row", md: "column"}} sx={{py: `10px`}} justifyContent={{xs: "normal", md: "center"}} gap={2}>
+                    {topicData? topicData.lecturer.account == account? <Stack direction={{xs: "row", md: "column"}} sx={{py: `10px`}} justifyContent={{xs: "normal", md: "center"}} gap={2}>
                             <Button onClick={() => {setTarget(1); openUploadDialog()}} color="success" variant="contained" startIcon={<Add />}>Cập nhật</Button>
                             <Button onClick={() => {setTarget(1); openDeleteDialog()}} disabled={!(data != null && data[0] != null)} color="error" variant="contained" startIcon={<Delete />}>Xoá</Button>
-                    </Stack>
+                    </Stack>: <></>: <></>}
                 </Grid>
             </Grid>
             <Divider />
@@ -190,10 +192,10 @@ const TopicDocument = ({id = ""}) => {
                         <Typography>Thông tin về tài liệu báo cáo chưa được cập nhật</Typography>}      
                 </Grid>
                 <Grid xs={12} md={3} lg={2}>
-                    <Stack direction={{xs: "row", md: "column"}} sx={{py: `10px`}} justifyContent={{xs: "normal", md: "center"}} gap={2}>
+                    {topicData? topicData.lecturer.account == account? <Stack direction={{xs: "row", md: "column"}} sx={{py: `10px`}} justifyContent={{xs: "normal", md: "center"}} gap={2}>
                         <Button onClick={() => {setTarget(2); openUploadDialog()}} color="success" variant="contained" startIcon={<Add />}>Cập nhật</Button>
                         <Button onClick={() => {setTarget(2); openDeleteDialog()}} disabled={!(data != null && data[1] != null)} color="error" variant="contained" startIcon={<Delete />}>Xoá</Button>
-                    </Stack>
+                    </Stack>: <></>: <></>}
                 </Grid>
             </Grid>
         </Stack> 

@@ -36,9 +36,9 @@ const Semester = () =>{
             <Grid md={9} lg={10} xl={10.5}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link underline="hover" color="inherit" href="/admin">
-                    Home
+                    Trang chủ
                     </Link>
-                    <Typography color="text.primary">Semester</Typography>
+                    <Typography color="text.primary">Học kỳ</Typography>
                 </Breadcrumbs>
             </Grid>
             <Grid md={3} lg={2} xl={1.5}>

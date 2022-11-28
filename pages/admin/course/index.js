@@ -39,17 +39,17 @@ const Course = () =>{
     }}>
     {open ? <CreateCourse open={open} setOpen={setOpen}/> : <></>}
      <Grid container width={"100%"} alignItems="center">
-        <Grid md={9} lg={10} xl={10.5}>
+        <Grid md={9} lg={10}>
             <Breadcrumbs aria-label="breadcrumb">
                 <Link underline="hover" color="inherit" href="/admin">
-                Home
+                Trang chủ
                 </Link>
-                <Typography color="text.primary">Course</Typography>
+                <Typography color="text.primary">Nhóm học phần</Typography>
             </Breadcrumbs>
         </Grid>
-        <Grid md={3} lg={2} xl={1.5}>
+        <Grid md={3} lg={2}>
             <Button variant="contained" onClick={() => {setOpen(true)}} component="label" startIcon={<Add/>}>
-                Import
+                Nhập nhóm học phần
             </Button>
         </Grid>
      </Grid>
