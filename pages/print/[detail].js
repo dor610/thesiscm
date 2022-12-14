@@ -1,6 +1,6 @@
 
 import { Edit, Print } from "@mui/icons-material";
-import { Divider, SpeedDial, SpeedDialAction, SpeedDialIcon, Typography, Unstable_Grid2 as Grid } from "@mui/material";
+import { Button, Divider, IconButton, Paper, SpeedDial, SpeedDialAction, SpeedDialIcon, Typography, Unstable_Grid2 as Grid } from "@mui/material";
 import { Box, Stack } from "@mui/system";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -43,10 +43,19 @@ const PrintPage = () => {
         { icon: <Print />, name: 'In tài liệu', onClick: print},
      ];
     return (
-        <Stack direction="column" sx={{width: `750px`, mx: `auto`}}>
-            <Box sx={{width: `100%`, height: `50px`, "@media print": {display: `none`}}}>
-
+        <>
+        <Box sx={{width: `100%`, height: `50px`, py: `10px`, "@media print": {display: `none`}}}>
+                <Paper>
+                <Grid sx={{px:`20px`}} container>
+                    <Grid xs={11}><Typography sx={{paddingLeft: `20px`}} variant="h6">In hoặc xuất tài liệu dưới dạng tệp tin PDF</Typography></Grid>
+                    <Grid xs={1}>
+                    <IconButton size="large" variant="contained" onClick={e => print()}><Print/></IconButton>
+                    </Grid>
+                </Grid>
+                </Paper>
             </Box>
+        <Stack direction="column" sx={{width: `750px`, mx: `auto`, paddingTop: `50px`, "@media print": {paddingTop: `0px`}}}>
+            
             <Grid container sx={{width: `100%`}}>
                 <Grid xs={6}>
                     <Stack direction={"row"}>
@@ -119,7 +128,7 @@ const PrintPage = () => {
                     </Grid>
                 </Grid>
                 {course? course.students.map((data, index) => {
-                    return <TableRow key={Math.random() + "_" + Math.random()} no={index + 1} studentCode={data} />
+                    return <TableRow key={Math.random() + "_" + Math.random()} no={index + 1} semester={course.semester} studentCode={data} />
                 }): <></>}
             </Box>  
             <Grid container>
@@ -139,23 +148,7 @@ const PrintPage = () => {
                     </Stack>
                 </Grid>
             </Grid>
-            {!onProcess? <SpeedDial
-                ariaLabel="SpeedDial"
-                sx={{ position: 'fixed', bottom: `5%`, right: `3%`, "@media print": {display: `none`}}}
-                icon={<SpeedDialIcon />}
-                open={open}
-                onOpen={e => setOpen(true)}
-                onClose={e => setOpen(false)}
-            >
-                {actions.map((action) => (
-                <SpeedDialAction
-                    key={action.name}
-                    icon={action.icon}
-                    onClick={e => {action.onClick(); setOpen(false)}}
-                />
-                ))}
-            </SpeedDial>: <></>}
-        </Stack>
+        </Stack></>
     )
 
 }

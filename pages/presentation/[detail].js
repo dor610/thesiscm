@@ -19,6 +19,8 @@ const Presetation = () => {
     const account = useSelector(state => state.user.account);
     const router = useRouter();
     const {detail} = router.query;
+    const isReloadReport = useSelector(state => state.presentation.reloadReport);
+    const isReportApproved = useSelector(state => state.presentation.isReportApproved);
 
     const [tab, setTab] = useState("1");
     const [data, setData] = useState(null);
@@ -27,6 +29,11 @@ const Presetation = () => {
         if(detail)
             getData();
     }, [detail])
+
+    useEffect(() => {
+        if(isReportApproved)
+            getData(); 
+    }, [isReportApproved])
 
     const getData = async () =>{
         let result = await sendAuthGetRequest("/api/presentation?id="+detail);
@@ -42,21 +49,20 @@ const Presetation = () => {
 
     return (
         <Box sx={{width: `100%`, height: `100%`}}>
-            <TabContext value={tab} sx={{width: `100%`}}>
+            
+            <TabContext value={tab}>
                 <Authorization/>
-                <Stack direction={"row"} sx={{ borderBottom: 1, borderColor: 'divider', "@media print": {display: `none`} }}>
-                <Stack direction={"row"} sx={{width: `35%`, height: `50px`, px: `20px`}} alignItems="center">
-                    <Link href={"/user/course"}><Typography variant="h5">Thesiscm</Typography></Link>
-                </Stack>   
+                <Stack direction={"row"} sx={{ borderBottom: 1, borderColor: 'divider', "@media print": {display: `none`} }}> 
                 <TabList 
                     variant="scrollable"
-                    scrollButtons="auto" 
+                    scrollButtons
+                    sx={{mx: `auto`, maxWidth: `100%`}}
                     onChange={handleChange}>
-                    <Tab wrapped label="Tổng quan" value="1" />
-                    {data && data.secretary.account == account? <Tab wrapped label="Biên bản" value="2" />: ""} 
-                    <Tab wrapped label="Phiếu chấm điểm" value="3" />
-                    {data && data.secretary.account == account? <Tab wrapped label="In kết quả đánh giá" value="4" />: ""}
-                    <Tab wrapped label="Biên bản" value="5" />
+                    <Tab label="Tổng quan" value="1" />
+                    {data && data.secretary.account == account? <Tab label="Biên bản" value="2" />: ""} 
+                    {data && (data.secretary.account == account || data.president.account == account || data.member.account == account)? <Tab label="Phiếu chấm điểm" value="3" />: ""}
+                    {data && data.secretary.account == account? <Tab label="In kết quả đánh giá" value="4" />: ""}
+                    {data && data.president.account == account?<Tab label="Biên bản" value="5" />:""}
                 </TabList>
                 </Stack>
                 <TabPanel value="1">

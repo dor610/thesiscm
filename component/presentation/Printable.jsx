@@ -9,6 +9,10 @@ const Printable = ({thesisData}) => {
 
     
     const [open, setOpen] = useState(false);
+    const [printable1, setPrintable1] = useState(false);
+    const [printable2, setPrintable2] = useState(false);
+    const [printable3, setPrintable3] = useState(false);
+    const [printable4, setPrintable4] = useState(false);
 
     const print = () => {
         window.print();
@@ -20,24 +24,24 @@ const Printable = ({thesisData}) => {
 
     return (
         <Box sx={{width: `100%`, height: `auto`}}>
-            <PointSheetForPrint user={thesisData.president.account} thesisData={thesisData}/>
+            <PointSheetForPrint user={thesisData.president.account} setPrintable={setPrintable1} thesisData={thesisData}/>
             <Box sx={{width: `100%`, height: `310px`, "@media print": {display: `block`}, "@media screen": {display: `none`}}}></Box>
             <Stack direction={"column"} justifyContent={"center"} sx={{width: `100%`, height: `100px`, "@media print": {display: `none`}}}>
                 <Divider />
             </Stack>
-            <PointSheetForPrint user={thesisData.secretary.account} thesisData={thesisData}/>
+            <PointSheetForPrint user={thesisData.secretary.account} setPrintable={setPrintable2} thesisData={thesisData}/>
             <Box sx={{width: `100%`, height: `330px`, "@media print": {display: `block`}, "@media screen": {display: `none`}}}></Box>
             <Stack direction={"column"} justifyContent={"center"} sx={{width: `100%`, height: `100px`, "@media print": {display: `none`}}}>
                 <Divider />
             </Stack>
-            <PointSheetForPrint user={thesisData.member.account} thesisData={thesisData}/>
+            <PointSheetForPrint user={thesisData.member.account} setPrintable={setPrintable3} thesisData={thesisData}/>
             <Box sx={{width: `100%`, height: `310px`, "@media print": {display: `block`}, "@media screen": {display: `none`}}}></Box>
             <Stack direction={"column"} justifyContent={"center"} sx={{width: `100%`, height: `100px`, "@media print": {display: `none`}}}>
                 <Divider />
             </Stack>
-            <ReportForPrint printable={true} thesisData={thesisData}/>
+            <ReportForPrint printable={true}  setPrintable={setPrintable4} thesisData={thesisData}/>
 
-            <SpeedDial
+            {printable1 && printable2 && printable3 && printable4? <SpeedDial
                 ariaLabel="SpeedDial"
                 sx={{ position: 'fixed', bottom: `5%`, right: `3%`, "@media print": {display: `none`}}}
                 icon={<SpeedDialIcon />}
@@ -53,7 +57,7 @@ const Printable = ({thesisData}) => {
                     onClick={e => {action.onClick(); setOpen(false)}}
                 />
                 ))}
-            </SpeedDial>
+            </SpeedDial>: <></>}
         </Box>
     )
 };

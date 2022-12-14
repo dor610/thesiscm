@@ -7,7 +7,7 @@ import { errorNotify, successNotify } from "../../common/toastify";
 import { convertNumberMarkToLetterMark, sendAuthGetRequest, sendAuthPostResquest } from "../../common/utils";
 import { setPresentationGetLog, setPresentationReloadReport } from "../../features/presentationSlice";
 
-const ReportForPrint = ({thesisData, printable=false}) =>{
+const ReportForPrint = ({thesisData, printable=false, setPrintable}) =>{
     const account = useSelector(state => state.user.account);
     const dispatch = useDispatch();
     const isReloadReport = useSelector(state => state.presentation.reloadReport);
@@ -63,8 +63,10 @@ const ReportForPrint = ({thesisData, printable=false}) =>{
             getPoint();
             dispatch(setPresentationReloadReport(false));
             setOnProcess(false);
+            setPrintable? setPrintable(true):"";
         }else {
             dispatch(setPresentationReloadReport(false));
+            setPrintable? setPrintable(false):"";
             setOnProcess(false);
         }
     }
@@ -230,8 +232,8 @@ const ReportForPrint = ({thesisData, printable=false}) =>{
                     điểm chữ: {convertNumberMarkToLetterMark(totalPoint)}
                     </Typography>
                 <Typography sx={{fontWeight: `bold`}}>2.6. Kết luận của Hội đồng:</Typography>
-                <Typography sx={{paddingLeft: `20px`}}>Luận văn của sinh viên {presentationResult} .đạt (không đạt) yêu cầu.</Typography>
-                <Typography sx={{paddingLeft: `20px`}}>Điểm: {finalPoint}</Typography>
+                <Typography sx={{paddingLeft: `20px`}}>Luận văn của sinh viên {thesisData? thesisData.student.name: ""} .{presentationResult} yêu cầu.</Typography>
+                <Typography sx={{paddingLeft: `20px`}}>Điểm: {totalPoint}</Typography>
                 <Typography sx={{marginTop: `30px`}}>Hội đồng kết thúc vào lúc {endTime} cùng ngày.</Typography>
                 <Grid container sx={{width: `100%`, marginTop: `30px`}}>
                     <Grid xs={5}>

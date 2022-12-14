@@ -12,7 +12,7 @@ const columns = [
     { field: 'note', headerName: 'Ghi chú', width: 150, flex: 5},
 ]
 
-const UserLog = ({userId}) =>{
+const UserLog = ({userId, reload, setReload}) =>{
 
     const [data, setData] = useState([]);
     const [onProcess, setOnProcess] = useState(false);
@@ -23,8 +23,15 @@ const UserLog = ({userId}) =>{
         }
     }, [userId, data]);
 
+    useEffect(() => {
+        if(reload) {
+            getData(userId);
+        }
+    }, [reload]);
+
     const getData = async (id) =>{
         setOnProcess(true);
+        setReload(false);
         let result = await sendAuthGetRequest("/api/user/log?id="+id);
         if(result.status === 200){
             setData(result.data.map((log, index) => ({id: index+"_user_log", time: miliSecToDate(log.timestamp), typeObj: {code: log.typeCode, text: log.type}, ...log})));

@@ -10,6 +10,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from "react"; 
 import NavBar from "../admin/NavBar";
 import Authorization from "./Authorization";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -86,7 +89,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function AdminLayout({children}) {
 
     const theme = useTheme();
+    const router = useRouter();
+    const userRole = useSelector(state => state.user.role);
     const [open, setOpen] = useState(true);
+
+    // useEffect(() => {
+    //   if(!userRole.includes("2") && !userRole.includes("3"))
+    //     router.push("/");
+    // })
 
     const handleDrawerOpen = () => {
       setOpen(true);
@@ -101,7 +111,6 @@ export default function AdminLayout({children}) {
 
     const getHoverBackgroundColor = (color, mode) =>
         mode === 'dark' ? darken(color, 0.5) : lighten(color, 0.5);
-
   
     return (
       <Box sx={{

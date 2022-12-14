@@ -104,7 +104,7 @@ export default function LoginPage() {
       }}>
         <Paper elevation={5} sx={(theme) => ({
               backgroundColor: `background.paper`,
-              height: `65vh`,
+              height: `50vh`,
               width: `600px`,
               [theme.breakpoints.down("sm")]: {
                 width: `98vw`
@@ -124,23 +124,11 @@ export default function LoginPage() {
                       
                     }}
                   >
-                    <Box sx={{
-                      width: `50px`,
-                      height: `50px`,
-                      backgroundColor: `background.primary`
-                    }}></Box>
-                    <Typography variant="h5">ThesisCM</Typography>
+                    <Typography variant="h5">Hệ thống hỗ trợ quản lý luận văn tốt nghiệp ngành Kỹ thuật phần mềm</Typography>
                   </Box>
                   <Divider />
                   {onProcess? <LinearProgress />: <></>}
                   <Stack direction="column">
-                  <Typography sx={theme => ({
-                    fontSize: `2.5em`,
-                    [theme.breakpoints.down("md")]:{
-                      fontSize: '2em',
-                    },
-                  })}>
-                    Quản lý hội đồng luận văn</Typography>
                   <Typography sx={theme => ({
                     fontSize: `1.5em`,
                     [theme.breakpoints.down("md")]:{
@@ -165,7 +153,7 @@ export default function LoginPage() {
                           cursor: `pointer`,
                           color: 'background.secondary'
                         }
-                      }}>Quên mật khẩu?</Typography></Link>
+                      }}><span style={{visibility: `hidden`}}>Quên mật khẩu?</span></Typography></Link>
                       <Button disabled={onProcess} size="large" onClick={login} variant="contained">Đăng nhập</Button>
                     </Box>
                     

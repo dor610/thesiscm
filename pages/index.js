@@ -5,37 +5,48 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getData } from "../common/localStorage";
 import { isLoggedIn } from "../common/utils";
+import Authorization from "../component/layout/Authorization";
 import { setIsLoggedIn } from "../features/userSlice";
 
 export default function Home() {
 
   const router = useRouter();
   const userData = useSelector(state => state.user.data);
+  const userRole = useSelector(state => state.user.role);
 
   const [isUser, setIsUser] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    if(Object.keys(userData).length > 0) {
+    console.log(userRole);
+    if(userRole.length > 0) {
       roleCheck();
     }
-  }, [userData])
+  }, [userRole])
 
   const roleCheck = () => {
     console.log(userData);
-    if(userData.role.includes("0") || userData.role.includes("1"))
+    if(userRole.includes("0") || userRole.includes("1"))
       setIsUser(true);
     
-    if(userData.role.includes("2") || userData.role.includes("3"))
+    if(userRole.includes("2") || userRole.includes("3"))
       setIsAdmin(true);
   }
 
+  const redirect = (path) =>{
+    router.push(path);
+  }
+
   const toAdminPage = () =>{
-    router.push("/admin");
+    redirect("/admin");;
   }
 
   const toUserPage = () => {
-    router.push("/user");
+    if (userRole.includes("1")) {
+      redirect("/user");
+    }else{
+      redirect("/user/schedule");
+    }
   }
 
   return (
@@ -70,21 +81,17 @@ export default function Home() {
                       
                     }}
                   >
-                    <Box sx={{
-                      width: `50px`,
-                      height: `50px`,
-                      backgroundColor: `background.primary`
-                    }}></Box>
-                    <Typography variant="h5">ThesisCM</Typography>
+                    <Typography variant="h5">Hệ thống hỗ trợ quản lý luận văn tốt nghiệp ngành Kỹ thuật phần mềm</Typography>
                   </Box>
+                  <Authorization />
                   <Divider />
-                  {!(Object.keys(userData).length > 0)? <Stack direction="column" alignItems={"center"} gap={2} justifyContent={"center"} sx={{width: `100%`, py: `20%`}}>
+                  {!(userRole && userRole.length > 0)? <Stack direction="column" alignItems={"center"} gap={2} justifyContent={"center"} sx={{width: `100%`, py: `20%`}}>
                       <CircularProgress />
                       <Typography>Đang tải ...</Typography>
                   </Stack>: 
                   <Stack direction="column" alignItems={"center"} gap={2} justifyContent={"center"} sx={{width: `100%`, py: `20%`}}>
-                      {isAdmin?<Button variant="contained" onClick={() => toAdminPage()}>Đến trang quản lý</Button>:<></>}  
-                      {isUser?<Button variant="contained" onClick={() => toUserPage()}>Đến trang người dùng</Button>:<></>}  
+                      {isAdmin?<Button variant="contained" sx={{width: `200px`}} onClick={() => toAdminPage()}>Đến trang quản lý</Button>:<></>}  
+                      {isUser?<Button variant="contained" sx={{width: `200px`}} onClick={() => toUserPage()}>Đến trang người dùng</Button>:<></>}  
                   </Stack>}
               </Stack>
             </Paper>

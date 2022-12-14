@@ -45,6 +45,7 @@ const CurrentTopic = () =>{
         let arr = []
         let count = 0;
         result.data.forEach(element => {
+          console.log(element);
           element.member.forEach(data => {
             count++;
             arr.push({

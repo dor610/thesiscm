@@ -37,14 +37,16 @@ const PointSheet = ({thesisData}) => {
     }, []);
 
     useEffect(() => {
-        processPoint();
-    }, [aPoint, bPoint, cPoint]);
+        if(sample && aPoint && bPoint && cPoint){
+            processPoint();
+        }
+    }, [aPoint, bPoint, cPoint, sample]);
 
     useEffect(() => {
-        if(account && thesisData) {
+        if(account && thesisData && sample) {
             getData();
         }
-    }, [account, thesisData]);
+    }, [account, thesisData, sample]);
 
     useEffect(() => {
         if(reload)
@@ -136,7 +138,7 @@ const PointSheet = ({thesisData}) => {
                 fullWidth
                 >
                 {list[key].data.map((option) => (
-                    <MenuItem key={option.value} title={option.label} value={option.value}>
+                    <MenuItem sx={{whiteSpace: 'normal'}} key={option.value} title={option.label} value={option.value}>
                     {option.label}
                     </MenuItem>
                 ))}
@@ -233,6 +235,15 @@ const PointSheet = ({thesisData}) => {
 
         
         result = aActualPoint + bActualPoint + cActualPoint;
+        setATotalPoint(Math.round((aActualPoint + Number.EPSILON) * 100) / 100);
+        setBTotalPoint(Math.round((bActualPoint + Number.EPSILON) * 100) / 100);
+        setCTotalPoint(Math.round((cActualPoint + Number.EPSILON) * 100) / 100);
+        setTotalPoint(Math.round((result + Number.EPSILON) * 100) / 100);
+    }
+
+    const initialPoint = (aActualPoint, bActualPoint, cActualPoint) =>{
+        let result = aActualPoint + bActualPoint + cActualPoint;
+        console.log(aActualPoint + "   " +bActualPoint + "   " +cActualPoint +"   " + result);
         setATotalPoint(Math.round((aActualPoint + Number.EPSILON) * 100) / 100);
         setBTotalPoint(Math.round((bActualPoint + Number.EPSILON) * 100) / 100);
         setCTotalPoint(Math.round((cActualPoint + Number.EPSILON) * 100) / 100);

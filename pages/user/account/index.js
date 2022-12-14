@@ -24,6 +24,7 @@ const User = () => {
     const [isSuccess, setIsSuccess] = useState(false);
     const [onProcess, setOnProcess] = useState(false);
     const [message, setMessage] = useState("");
+    const [reloadLog, setReloadLog] = useState(false);
 
     const [userData, setUserData] = useState(null);
 
@@ -122,7 +123,7 @@ const User = () => {
                     width: `100%`,
                     height: `100%`
                     }}>
-                        {userData? <UserLog userId={userData.id} />: <></>}
+                        {userData? <UserLog userId={userData.id} relead={reloadLog} setReload={setReloadLog} />: <></>}
                 </TabPanel>
                 <TabPanel value="2" sx={{
                     width: `100%`,

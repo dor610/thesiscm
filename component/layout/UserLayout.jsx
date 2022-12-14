@@ -7,9 +7,11 @@ import Toolbar from '@mui/material/Toolbar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "../user/NavBar";
 import Authorization from "./Authorization";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -85,7 +87,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function UserLayout({children}) {
 
+  const router = useRouter();
+  const userRole = useSelector(state => state.user.role);
     const [open, setOpen] = useState(true);
+
+    // useEffect(() => {
+    //   if(!userRole.includes("0") && !userRole.includes("1"))
+    //     router.push("/");
+    // })
 
     const handleDrawerOpen = () => {
       setOpen(true);

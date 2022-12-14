@@ -30,13 +30,14 @@ const SumUp = ({thesisData}) => {
     }, [thesisData])
 
     useEffect(() => {
-        if(isGetLog) {
+        if(isGetLog && thesisData) {
             getLogs();
         }
-    }, [isGetLog]);
+    }, [isGetLog, thesisData]);
 
     const getLogs = async () => {
         setOnProcess(true);
+        console.log(thesisData);
         let result = await sendAuthGetRequest("/api/presentation/log?id="+thesisData.id);
         console.log(result);
         if(result.status == 200) {

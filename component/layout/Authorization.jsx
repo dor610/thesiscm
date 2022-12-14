@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getData } from "../../common/localStorage";
 import { isLoggedIn } from "../../common/utils";
-import { setAccount, setIsLoggedIn, setUserData, setUserId } from "../../features/userSlice";
+import { setAccount, setIsLoggedIn, setUserData, setUserId, setUserName, setUserRole } from "../../features/userSlice";
 
 
 const Authorization = () => {
@@ -18,14 +18,15 @@ const Authorization = () => {
     
       const checkAuthentication = async () => {
         if(!isUserLoggedIn) {
-            let data = await isLoggedIn()
-            console.log(data);
-            if(!data.status){
+            let res = await isLoggedIn()
+            if(!res.status){
               router.push("/login");
               dispatch(setIsLoggedIn(false));
             }else {
-              dispatch(setAccount(data.data.account));
-              dispatch(setUserId(data.data.id));
+              dispatch(setAccount(res.data.account));
+              dispatch(setUserId(res.data.id));
+              dispatch(setUserName(res.data.name));
+              dispatch(setUserRole(res.data.role));
               dispatch(setIsLoggedIn(true));
             }
           }

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { miliSecToDateOnly, sendAuthGetRequest } from "../../common/utils";
 
-const TableRow = ({studentCode, no}) => {
+const TableRow = ({studentCode, no,semester}) => {
 
     const [student, setStudent] = useState(null);
     const [numberPoint, setNumberPoint] = useState("");
@@ -13,11 +13,11 @@ const TableRow = ({studentCode, no}) => {
     const [otherName, setOtherName] = useState("");
 
     useEffect(() =>{
-        if(studentCode) {
+        if(studentCode && semester) {
             getStudent();
             getStudentMark();
         }
-    }, [studentCode])
+    }, [studentCode,, semester])
 
     const getStudent = async () => {
         let res = await sendAuthGetRequest("/api/student/code?code="+studentCode);
@@ -34,7 +34,8 @@ const TableRow = ({studentCode, no}) => {
     }
 
     const getStudentMark = async () => {
-        let res = await sendAuthGetRequest("/api/report/mark?student="+studentCode);
+        console.log(semester);
+        let res = await sendAuthGetRequest("/api/report/mark?student="+studentCode+"&semester=" +semester.id);
         if(res.status == 200) {
             setNumberPoint(res.data.number);
             setLetterPoint(res.data.letter);

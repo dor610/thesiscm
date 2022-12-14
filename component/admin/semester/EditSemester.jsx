@@ -25,7 +25,9 @@ const EditSemester = ({upcomingReload, passReload}) =>{
     }, [startDate, endDate])
 
     useEffect(() =>{
-        getData();
+        if(editId){
+          getData();
+        }
     }, [editId]);
 
     const onClose = () =>{
@@ -50,7 +52,7 @@ const EditSemester = ({upcomingReload, passReload}) =>{
     }
 
     const onSubmit = () =>{
-      if(endDate.get("year") - startDate.get("year") == 1){
+      if(endDate.get("year") - startDate.get("year") <= 1){
         if(startDate.isValid() && endDate.isValid()) {
           setOnProcess(true);
           setIsError(false);
@@ -78,11 +80,12 @@ const EditSemester = ({upcomingReload, passReload}) =>{
 
     const submit = async () =>{
       let data = new FormData();
+      data.append("id", editId);
       data.append("startDate", startDate.valueOf());
       data.append("endDate", endDate.valueOf());
       data.append("numberOfWeek", numberOfWeek);
       data.append("code", semesterCode);
-      let result = await sendAuthPostResquest("/api/semester", data);
+      let result = await sendAuthPostResquest("/api/semester/update", data);
       if (result.status === 200) {
         setIsSuccess(true);
         setOnProcess(false);
@@ -111,15 +114,15 @@ const EditSemester = ({upcomingReload, passReload}) =>{
 
     return (
         <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Thêm thông tin học kỳ</DialogTitle>
+        <DialogTitle>Chỉnh sửa thông tin học kỳ</DialogTitle>
         <DialogContent>
           <Stack direction={"column"} sx={{gap: '20px'}}>
           <DialogContentText>
-            Nhập thông tin để thêm mới một học kỳ
+            Nhập thông tin để chỉnh sửa học kỳ
           </DialogContentText>
           {onProcess? <LinearProgress />: <></>}
           {isError? <Alert severity="error">{errorMessage}</Alert>: <></>}
-          {isSuccess? <Alert severity="success">{"Thêm học kỳ thành công"}</Alert>: <></>}
+          {isSuccess? <Alert severity="success">{"Chỉnh sửa học kỳ thành công"}</Alert>: <></>}
            <TextField fullWidth color="secondary" select={semesters.length > 0} required value={semesterCode} onChange={(e) => {setSemesterCode(e.target.value)}} label="Học kỳ">
                     {semesters.length > 0 ? semesters.map((option) => (
                         <MenuItem  key={option.value} value={option.value}>

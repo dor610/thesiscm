@@ -26,7 +26,8 @@ const CreateSemester = ({open, setOpen, upcomingReload, passReload}) =>{
     }
 
     const onSubmit = () =>{
-      if(endDate.get("year") - startDate.get("year") == 1){
+      console.log(endDate.get("year") - startDate.get("year"));
+      if(endDate.get("year") - startDate.get("year") <= 1){
         if(startDate.isValid() && endDate.isValid()) {
           setOnProcess(true);
           setIsError(false);

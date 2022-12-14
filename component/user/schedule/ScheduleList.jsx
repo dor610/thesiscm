@@ -206,7 +206,7 @@ const ScheduleList = ({filter = false}) => {
                   </>:<></>}
                 </Box>
               )
-            }): <></>}
+            }): onProcess? <></>: <Typography sx={{width: `100%`, textAlign:`center`, marginTop: `50px`}} variant="h5">Không có lịch báo cáo</Typography>}
           </Stack>
     )
 }

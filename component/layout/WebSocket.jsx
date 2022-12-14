@@ -3,15 +3,19 @@ import { Stomp } from '@stomp/stompjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { isLoggedIn, url } from "../../common/utils";
 import { useEffect } from 'react';
+import { notify, successNotify } from '../../common/toastify';
+import { setPresentationReloadReport, setPresentationReportApproved, setStartPresent } from '../../features/presentationSlice';
 
 let stompClient;
 let account;
 let dispatch;
 
-const connect =() =>{
-    let socket = new SockJS(url+'/fandom');
-    stompClient = Stomp.over(socket);
-    //stompClient.connect({}, onConnected, onError);
+const connect =(userAccount) =>{
+    account = userAccount;
+    stompClient = Stomp.over(function(){
+      return new SockJS(url+'/fandom')
+    });
+    stompClient.connect({}, onConnected, onError);
   }
 
   const onConnected = () =>{
@@ -32,17 +36,20 @@ const connect =() =>{
   
     stompClient.subscribe(`/user/${account}/msg`,  data =>{
       let message = JSON.parse(data.body);
-      let ob ={};
-      ob[message.id] = message;
-    //   processNotification({
-    //     message: "Bạn có một tin nhắn mới",
-    //     note: "Tin nhắn",
-    //   })
-    //   dispatch(addNewMessageCurrentMessageList(ob));
+      notify(message.content, 1);
+      if(message.typeCode == "1"){
+        dispatch(setStartPresent(true));
+      } 
+      if(message.typeCode == "6") {
+        dispatch(setPresentationReloadReport(true));
+        dispatch(setPresentationReportApproved(true));
+      }
+      
     });
   
     stompClient.subscribe(`/user/${account}/notification`, data =>{
       let notification = JSON.parse(data.body);
+      console.log(notification);
       let ob = {};
       ob[notification.id] = notification;
     //   dispatch(addNotification(ob));
@@ -61,13 +68,13 @@ const connect =() =>{
 
 const WebSocket = () => {
     dispatch = useDispatch();
-    account = useSelector(state => state.user.account);
+    let userAccount = useSelector(state => state.user.account);
 
     useEffect(() => {
-        if(isLoggedIn()){
-          connect();
+        if(isLoggedIn() && userAccount){
+          connect(userAccount);
         }
-      }, []);
+      }, [userAccount]);
 
 
     return (

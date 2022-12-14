@@ -5,6 +5,7 @@ import ErrorChip from "../../common/ErrorChip";
 import EnableButon from "./EnableButton";
 import { useEffect, useState } from "react";
 import { sendAuthGetRequest } from "../../../common/utils";
+import InfoButton from "./InfoButton";
 
   const columns = [
     { field: 'account', headerName: 'Tài khoản', width: 150, flex: 1},
@@ -12,7 +13,7 @@ import { sendAuthGetRequest } from "../../../common/utils";
     { field: 'email', headerName: 'Email', width: 150, flex: 2.5 },
     { field: 'role', headerName: 'Vai trò', width: 150, flex: 1 },
     { field: 'status', headerName: 'Trạng thái', width: 150 , flex: 1, renderCell: ErrorChip},
-    { field: 'id', headerName: "", with: 150, flex: 1.5,  renderCell: EnableButon}
+    { field: 'id', headerName: "", with: 150, flex: 1.5,  renderCell: InfoButton}
   ];
 
 const DisabledUser = () =>{

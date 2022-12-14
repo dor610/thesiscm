@@ -34,7 +34,7 @@ const Point = ({thesisData}) => {
 
     return (
         <Stack>
-            <Paper elevation={2} sx={{width: `1000px`, mx: `auto`, padding: `20px`}}>
+            <Paper elevation={2} sx={{width: {xs: `100%`, lg: `1000px`}, mx: `auto`, padding: `20px`}}>
             <Stack direction={"row"} sx={{width: `100%`, mx: `auto`}} gap={2} alignItems="center" justifyContent={"center"}>
                 <Typography sx={{width: `50%`}} variant="h6">Bạn đang xem bảng điểm của: </Typography>
                 <TextField select={users.length > 0} fullWidth value={value} onChange={e => setValue(e.target.value)} variant="standard">

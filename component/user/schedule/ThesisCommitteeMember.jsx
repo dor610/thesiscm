@@ -9,8 +9,8 @@ const ThesisCommitteeMember = (props) => {
     return (
       <ol>
         <li>{president.title + ". " + president.name}</li>
-        <li>{secretary.title + ". " + secretary.name}</li>
         <li>{member.title + ". " + member.name}</li>
+        <li>{secretary.title + ". " + secretary.name}</li>
       </ol>
     );
   };

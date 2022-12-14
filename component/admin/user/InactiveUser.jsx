@@ -22,10 +22,8 @@ const InactiveUser = () =>{
   const [onProcess, setOnProcess] = useState(false);
 
   useEffect(() => {
-    if(rows.length === 0) {
       getData();
-    }
-  }, [rows]);
+  }, []);
 
   const getData = async () =>{
     setOnProcess(true);

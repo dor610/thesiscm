@@ -55,6 +55,7 @@ const ScheduleList = ({filter = false}) => {
       let result = await sendAuthGetRequest(filter? "/api/presentation/all": "/api/presentation/semester/current");
       if(result.status === 200) {
         let arr = result.data.map((data, index) => {
+          console.log(data);
             return ({
               semesterValue: data.semester.semesterName,
               schoolYear: data.semester.startYear + " - " + data.semester.endYear,

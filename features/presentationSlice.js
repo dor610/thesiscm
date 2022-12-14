@@ -4,6 +4,7 @@ const initialState = {
     isGetLog: false,
     reloadReport: false,
     isReportApproved: false,
+    startPresent: false,
 }
 
 const presentationSlice = createSlice({
@@ -18,10 +19,16 @@ const presentationSlice = createSlice({
         },
         setPresentationReportApproved: (state, action) => {
             state.isReportApproved = action.payload;
+        },
+        setPresentationPrintable: (state, action) => {
+            state.printable = action.payload;
+        },
+        setStartPresent: (state, action) => {
+            state.startPresent = action.payload;
         }
     }
 })
 
-export const {setPresentationGetLog, setPresentationReloadReport, setPresentationReportApproved} = presentationSlice.actions;
+export const {setPresentationGetLog, setPresentationReloadReport, setPresentationReportApproved, setPresentationPrintable, setStartPresent} = presentationSlice.actions;
 
 export default presentationSlice.reducer;

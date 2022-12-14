@@ -88,7 +88,7 @@ const CreateUser = () =>{
             data.append("name", userName);
             data.append("email", email);
             data.append("phone", phone);
-            data.append("role", );
+            data.append("role", role);
             data.append("title", title);
 
             let res = await sendAuthPostResquest("/api/user", data);
@@ -144,7 +144,6 @@ const CreateUser = () =>{
         setNameValid(true);
         setEmailValid(true);
         setPhoneValid(true);
-        setRoleValid(true);
         setTitleValid(true);
     }
 

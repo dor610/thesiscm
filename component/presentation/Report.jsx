@@ -87,7 +87,7 @@ const Report = ({thesisData}) =>{
                 dispatch(setPresentationReportApproved(false));
             }
         } else {
-            
+            getPoint();
             dispatch(setPresentationReportApproved(false));
             dispatch(setPresentationReloadReport(false));
             setOnProcess(false);
@@ -140,7 +140,6 @@ const Report = ({thesisData}) =>{
     }
 
     const writeLogOnSubmit = async () => {
-        console.log(data);
         let message = data? data.submitted? userData.name + " đã chỉnh sửa Biên bảng chấm điểm luận văn.": userData.name + " đã gửi Biên bảng chấm điểm luận văn.": userData.name + " đã gửi Biên bảng chấm điểm luận văn.";
         let formData = new FormData();
         formData.append("id", thesisData.id);
@@ -320,7 +319,7 @@ const Report = ({thesisData}) =>{
                     </Grid>
                 </Grid>
             </Stack>
-            {!isReportApproved?<SpeedDial
+            {!thesisData.approved?<SpeedDial
                 ariaLabel="SpeedDial"
                 sx={{ position: 'fixed', bottom: `5%`, right: `3%` }}
                 icon={<SpeedDialIcon />}

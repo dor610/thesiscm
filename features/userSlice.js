@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     account: "",
     id: "",
+    name: "",
+    role: [],
     data: {},
     loginSuccess: false,
     loginFail: false,
@@ -42,12 +44,18 @@ const userSlice = createSlice({
             state.loginSuccess = false;
             state.account = "";
         },
+        setUserName: (state, action) => {
+            state.name = action.payload;
+        },
+        setUserRole: (state, action) => {
+            state.role = action.payload;
+        },
         setUserView: (state, action) =>{
             state.userView = action.payload;
         },
     }
 });
 
-export const {setAccount, setUserData, setUserId, setLoginFail, setIsLoggedOut, setLoginSuccess, setIsLoggedIn, resetLoginStatus, setUserView} = userSlice.actions;
+export const {setAccount, setUserData, setUserId, setLoginFail, setUserRole, setIsLoggedOut, setUserName, setLoginSuccess, setIsLoggedIn, resetLoginStatus, setUserView} = userSlice.actions;
 
 export default userSlice.reducer;

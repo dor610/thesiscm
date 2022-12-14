@@ -1,12 +1,14 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Divider, MenuItem, Paper, Skeleton, TextField, Typography, Unstable_Grid2 as Grid } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Divider, LinearProgress, MenuItem, Paper, Skeleton, TextField, Typography, Unstable_Grid2 as Grid } from "@mui/material"
 import { Stack } from "@mui/system"
 import { GridExpandMoreIcon } from "@mui/x-data-grid"
 import { useEffect, useState } from "react"
+import { useDispatch } from "react-redux"
 import { setData } from "../../common/localStorage"
 import { convertNumberMarkToLetterMark, sendAuthGetRequest } from "../../common/utils"
 
-const PointSheetForPrint = ({user , thesisData}) => {
+const PointSheetForPrint = ({user , thesisData, setPrintable}) => {
 
+    const dispatch = useDispatch();
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -41,10 +43,10 @@ const PointSheetForPrint = ({user , thesisData}) => {
     }, [user, thesisData])
 
     useEffect(() => {
-        if(user && thesisData) {
+        if(user) {
             getData();
         }
-    }, [user, thesisData])
+    }, [user])
 
     const getSample  = async () => {
         let result = await sendAuthGetRequest("/api/sample");
@@ -71,6 +73,7 @@ const PointSheetForPrint = ({user , thesisData}) => {
     }
 
     const getData = async () => {
+        setOnProcess(true);
         let result = await sendAuthGetRequest("/api/point/user?account="+user+"&presentation="+thesisData.id);
         console.log(thesisData.id);
         if(result.status == 200 && result.data) {
@@ -89,6 +92,12 @@ const PointSheetForPrint = ({user , thesisData}) => {
             setCTotalPoint(tData.cTotalPoint);
             setTotalPoint(Math.round(((tData.aTotalPoint + tData.bTotalPoint + tData.cTotalPoint) + Number.EPSILON) * 100) / 100);
             setData(tData);
+            setOnProcess(false);
+            setPrintable? setPrintable(true): "";
+        } else {
+            setOnProcess(false);
+            setData(null);
+            setPrintable? setPrintable(false): "";
         }
 
     }
@@ -138,16 +147,16 @@ const PointSheetForPrint = ({user , thesisData}) => {
 
     return (
         <>
+        {!data? <Box sx={{width: {xs: `100%`, lg: `1000px`}, mx: `auto`, p: `20px`, '@media print': {display: `none`}}}>
+            {!onProcess? <Alert severity="warning">{
+                userData? userData.title + ". " + userData.name +" chưa xác nhận bảng điểm": "Đã có lỗi xảy ra"
+                }</Alert>: <LinearProgress />}
+        </Box>:
         <Stack direction="column" sx={{width: `800px`, mx: `auto`, paddingTop: `20px`,
                                         "@media print": {
                                             maxWidth: `100%`,
                                             width: `100%`,
                                         }}} >
-            {data? <></>: <Box sx={{width: {xs: `100%`}, mx: `auto`, p: `20px`, '@media print': {display: `none`}}}>
-            <Alert severity="warning">{
-                userData? userData.title + ". " + userData.name +" chưa xác nhận bảng điểm": "Đã có lỗi xảy ra"
-                }</Alert>
-        </Box>}
             <Stack direction={"column"} sx={{width: `100%`, paddingBottom: `20px`}} alignItems="center">
                 <Typography sx={{fontSize: `15pt`, fontWeight: `bold`}}>PHIẾU ĐÁNH GIÁ LUẬN VĂN TỐT NGHIỆP</Typography>
                 <Typography sx={{fontSize: `15pt`, fontWeight: `bold`}}>Ngành: KỸ THUẬT PHẦN MỀM</Typography>
@@ -220,7 +229,7 @@ const PointSheetForPrint = ({user , thesisData}) => {
                             </Grid>
                         </Grid>
 
-                    <Box sx={{width: `100%`, height: `150px`, "@media print": {display: `block`}, "@media screen": {display: `none`}}}></Box>
+                    <Box sx={{width: `100%`, height: `50px`, "@media print": {display: `block`}, "@media screen": {display: `none`}}}></Box>
                     <Stack direction={"column"} justifyContent={"center"} sx={{width: `100%`, height: `100px`, "@media print": {display: `none`}}}>
                         <Divider  />
                     </Stack>
@@ -256,7 +265,7 @@ const PointSheetForPrint = ({user , thesisData}) => {
                 </Grid>
             </Stack>
             
-        </Stack> </>
+        </Stack> }</>
     )
 }
 
